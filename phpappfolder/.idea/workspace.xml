@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bc2bf52d-33a6-4ded-b108-c753b2d3ca36" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution>
+      <phar pharPath="$PROJECT_DIR$/includes/composer.phar" interpreterId="4444dfbe-e7e7-4a55-98ec-381b6073ac03" />
+    </execution>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="composer.json" />
+      </list>
+    </option>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/phpunit/phpunit" />
+      <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-token-stream" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/orm" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-text-template" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/cache" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-file-iterator" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/dbal" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-code-coverage" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/common" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/resource-operations" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/annotations" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/recursion-context" />
+      <path value="$PROJECT_DIR$/vendor/fig/http-message-util" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/object-enumerator" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/reflection" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/global-state" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/persistence" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/object-reflector" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/collections" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/environment" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/event-manager" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/comparator" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/inflector" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/version" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/diff" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/exporter" />
+      <path value="$PROJECT_DIR$/vendor/phpspec/prophecy" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/type" />
+      <path value="$PROJECT_DIR$/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/symfony/service-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/vendor/symfony/string" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php73" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/vendor/pimple/pimple" />
+      <path value="$PROJECT_DIR$/vendor/twig/twig" />
+      <path value="$PROJECT_DIR$/vendor/myclabs/deep-copy" />
+      <path value="$PROJECT_DIR$/vendor/slim/twig-view" />
+      <path value="$PROJECT_DIR$/vendor/slim/slim" />
+      <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/slim/psr7" />
+      <path value="$PROJECT_DIR$/vendor/webmozart/assert" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/type-resolver" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-common" />
+      <path value="$PROJECT_DIR$/vendor/theseer/tokenizer" />
+      <path value="$PROJECT_DIR$/vendor/phar-io/version" />
+      <path value="$PROJECT_DIR$/vendor/phar-io/manifest" />
+      <path value="$PROJECT_DIR$/vendor/ocramius/package-versions" />
+      <path value="$PROJECT_DIR$/vendor/nikic/fast-route" />
+    </include_path>
+  </component>
+  <component name="ProjectId" id="1g5qHSK9Pm3aa9rd3HpfwTh9Ntu" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public_php/lab_01/say_hi_1" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="web.server" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public_php/lab_01/say_hi_1" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bc2bf52d-33a6-4ded-b108-c753b2d3ca36" name="Default Changelist" comment="" />
+      <created>1597414714791</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1597414714791</updated>
+      <workItem from="1597414716622" duration="439000" />
+      <workItem from="1597415309829" duration="700000" />
+      <workItem from="1597418601293" duration="839000" />
+      <workItem from="1599147573261" duration="108000" />
+      <workItem from="1599147737376" duration="5045000" />
+      <workItem from="1605544208967" duration="36000" />
+      <workItem from="1606998797105" duration="4740000" />
+      <workItem from="1607336734726" duration="6478000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1409" y="263" width="824" height="691" key="#CLI_Interpreters" timestamp="1599147985723">
+      <screen x="72" y="27" width="2477" height="1259" />
+    </state>
+    <state x="1409" y="263" width="824" height="691" key="#CLI_Interpreters/72.27.2477.1259@72.27.2477.1259" timestamp="1599147985723" />
+    <state x="591" y="167" width="800" height="684" key="#Deployment" timestamp="1607354411979">
+      <screen x="72" y="27" width="1848" height="957" />
+    </state>
+    <state x="591" y="167" width="800" height="684" key="#Deployment/72.27.1848.957@72.27.1848.957" timestamp="1607354411979" />
+    <state x="1535" y="379" width="582" height="357" key="#Notifications" timestamp="1599148784543">
+      <screen x="72" y="27" width="2477" height="1259" />
+    </state>
+    <state x="1535" y="379" width="582" height="357" key="#Notifications/72.27.2477.1259@72.27.2477.1259" timestamp="1599148784543" />
+    <state x="575" y="156" width="832" height="711" key="#SSH_Configurations" timestamp="1607354407004">
+      <screen x="72" y="27" width="1848" height="957" />
+    </state>
+    <state x="575" y="156" width="832" height="711" key="#SSH_Configurations/72.27.1848.957@72.27.1848.957" timestamp="1607354407004" />
+    <state x="1566" y="468" width="520" height="274" key="ComposerInitDialogKey" timestamp="1599148004860">
+      <screen x="72" y="27" width="2477" height="1259" />
+    </state>
+    <state x="1566" y="468" width="520" height="274" key="ComposerInitDialogKey/72.27.2477.1259@72.27.2477.1259" timestamp="1599148004860" />
+    <state x="1219" y="272" width="374" height="396" key="FileChooserDialogImpl" timestamp="1607006568923">
+      <screen x="72" y="27" width="1848" height="957" />
+    </state>
+    <state x="1219" y="272" width="374" height="396" key="FileChooserDialogImpl/72.27.1848.957@72.27.1848.957" timestamp="1607006568923" />
+    <state x="1609" y="349" width="424" height="520" key="FileChooserDialogImpl/72.27.2477.1259@72.27.2477.1259" timestamp="1599147994433" />
+    <state x="1626" y="479" width="399" height="156" key="NewPhpFileDialog" timestamp="1599153389626">
+      <screen x="72" y="27" width="2477" height="1259" />
+    </state>
+    <state x="1626" y="479" width="399" height="156" key="NewPhpFileDialog/72.27.2477.1259@72.27.2477.1259" timestamp="1599153389626" />
+    <state x="485" y="140" width="1022" height="737" key="SettingsEditor" timestamp="1607338645707">
+      <screen x="72" y="27" width="1848" height="957" />
+    </state>
+    <state x="485" y="140" width="1022" height="737" key="SettingsEditor/72.27.1848.957@72.27.1848.957" timestamp="1607338645707" />
+    <state x="892" y="222" width="197" height="580" key="ftp.server.browser" timestamp="1607339077928">
+      <screen x="72" y="27" width="1848" height="957" />
+    </state>
+    <state x="892" y="222" width="197" height="580" key="ftp.server.browser/72.27.1848.957@72.27.1848.957" timestamp="1607339077928" />
+    <state x="659" y="235" key="search.everywhere.popup" timestamp="1606999472918">
+      <screen x="72" y="27" width="1848" height="957" />
+    </state>
+    <state x="659" y="235" key="search.everywhere.popup/72.27.1848.957@72.27.1848.957" timestamp="1606999472918" />
+  </component>
+</project>
