@@ -1,0 +1,35 @@
+{% extends 'banner.html.twig' %}
+{% block content %}
+    <div id="page-content-div">
+        <h3>{{ page_heading_2 }}</h3>
+        <form action="{{ action1 }}" method="post">
+            <fieldset>
+                <legend>User details</legend>
+{#                {% if(error != false) %}#}
+{#                    <p class="error">{{ error }}</p>#}
+{#                {% else %}#}
+                    <br>
+{#                {% endif %}#}
+                <label for="username">Username:</label>
+                <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="password">Password:</label>
+                <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="password2">Verify password:</label>
+                <input id="password2" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="email">Email address:</label>
+                <input id="email" name="email" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="email_alert_tick">Alert on new message?</label>
+                <input id="email_alert_tick" name="email_alert_tick" type="checkbox"/>
+                <br><br>
+
+                <br>
+                <input type="submit" value="Register">
+            </fieldset>
+        </form>
+            <p class="curr_page"><a href="{{ landing_page }}">Home</a></p>
+    </div>
+{% endblock %}
