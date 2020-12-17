@@ -28,8 +28,9 @@ $app = new \Slim\App($container);
 
 require $app_path .'routes.php';
 //var_dump($app_path);
-
 session_regenerate_id();
+//var_dump(session_id());
+//var_dump($_SESSION);
 //var_dump(session_id());
 
 $app->run();

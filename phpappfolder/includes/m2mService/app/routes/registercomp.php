@@ -7,8 +7,8 @@ $app->post(
     '/registercomp',
     function(Request $request, Response $response) use ($app)
     {
-//        $tainted_params = $request->getParsedBody();
-//
+        $tainted_params = $request->getParsedBody();
+var_dump($tainted_params);
 //        $validator = $this->sessionValidator;
 //
 //        $cleaned_params = cleanParams($validator, $tainted_params);
