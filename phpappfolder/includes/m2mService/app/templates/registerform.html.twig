@@ -5,11 +5,11 @@
         <form action="{{ action1 }}" method="post">
             <fieldset>
                 <legend>User details</legend>
-{#                {% if(error != false) %}#}
-{#                    <p class="error">{{ error }}</p>#}
-{#                {% else %}#}
+                {% if(error != false) %}
+                    <p class="error">{{ error }}</p>
+                {% else %}
                     <br>
-{#                {% endif %}#}
+                {% endif %}
                 <label for="username">Username:</label>
                 <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>

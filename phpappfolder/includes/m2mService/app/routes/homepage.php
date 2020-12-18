@@ -11,6 +11,7 @@ $app->get('/', function(Request $request, Response $response)
         $errorMessage = $_SESSION['error'];
         unset($_SESSION['error']);
     }
+
     return $this->view->render($response,
     'homepageform.html.twig',
     [

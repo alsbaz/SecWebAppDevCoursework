@@ -16,8 +16,8 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-$container['sessionValidator'] = function () {
-    $validator = new \M2mService\SessionValidator();
+$container['m2mInputValidator'] = function () {
+    $validator = new \M2mService\M2MInputValidator();
     return $validator;
 };
 

@@ -8,21 +8,23 @@ $app->post(
     function(Request $request, Response $response) use ($app)
     {
         $tainted_params = $request->getParsedBody();
-var_dump($tainted_params);
-//        $validator = $this->sessionValidator;
-//
-//        $cleaned_params = cleanParams($validator, $tainted_params);
-//
-//        try {
-//            if($tainted_params != $cleaned_params){
-//                throw new Exception("Incorrect, please try again");
-//            }
-//        }
-//        catch(Exception $e) {
-//           header("Location: /register");
-//           $_SESSION['error'] = $e->getMessage();
-//           exit();
-//        }
+//var_dump($tainted_params);
+
+        $validator = $this->m2mInputValidator;
+        $cleaned_params = $validator->cleanParams2($tainted_params);
+
+        try {
+            if($cleaned_params == false){
+                throw new Exception("Incorrect inputs, please try again.");
+            }
+        }
+        catch(Exception $e) {
+            header("Location: /register");
+            $_SESSION['error'] = $e->getMessage();
+//var_dump($_SESSION['error']);
+            exit();
+        }
+
         return $this->view->render($response,
             'template_page.html.twig',
             [
@@ -31,16 +33,3 @@ var_dump($tainted_params);
             ]);
     });
 
-//function cleanParams($validator, array $tainted_params): array
-//{
-//    $cleaned_params = [];
-//    $tainted_username = $tainted_params['username'];
-//
-//    $cleaned_params['username'] = $validator->sanitiseString($tainted_username);
-////    $cleaned_params['password'] = $tainted_params['password']; //Easy way
-//    if (preg_match("[^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$]",
-//            $tainted_params['password']) && strlen($tainted_params['password']<21)){
-//        $cleaned_params['password'] = $tainted_params['password'];
-//    } //Hard way
-//    return $cleaned_params;
-//}
