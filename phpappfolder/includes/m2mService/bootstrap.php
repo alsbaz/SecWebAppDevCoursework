@@ -1,8 +1,11 @@
 <?php
 
 session_start();
-
+//$_SESSION['unique_id'] = bin2hex(random_bytes(4));
+//$_SESSION['unique_id'] = random_bytes(4);
+//var_dump($_SESSION['unique_id']);
 //$_SESSION['test'] = 'foo';
+//unset($_SESSION['test']);
 //$_SESSION['error'] = false;
 //var_dump($_SESSION);
 //var_dump(session_id());
@@ -27,7 +30,7 @@ require $app_path . 'dependencies.php';
 $app = new \Slim\App($container);
 
 require $app_path .'routes.php';
-//var_dump($app_path);
+
 session_regenerate_id();
 //var_dump(session_id());
 //var_dump($_SESSION);

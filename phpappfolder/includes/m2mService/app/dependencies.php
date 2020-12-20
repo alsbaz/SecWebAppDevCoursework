@@ -21,3 +21,12 @@ $container['m2mInputValidator'] = function () {
     return $validator;
 };
 
+$container['m2mDoctrineSqlQueries'] = function () {
+    $wrapper = new \M2mService\M2MDoctrineSqlQueries();
+    return $wrapper;
+};
+
+$container['m2mBcryptWrapper'] = function () {
+  $wrapper = new \M2mService\M2MBcryptWrapper();
+  return $wrapper;
+};

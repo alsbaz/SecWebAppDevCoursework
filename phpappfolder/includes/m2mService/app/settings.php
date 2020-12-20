@@ -17,6 +17,8 @@ $css_path = $app_url . 'css/standard.css';
 //var_dump($app_url);
 define('CSS_PATH', $css_path);
 
+
+
 $settings = [
     "settings" => [
         'displayErrorDetails' => true,
@@ -29,21 +31,15 @@ $settings = [
                 'cache' => false,
                 'auto_reload' => true,
             ]],
-        'pdo_settings' => [
-            'rdbms' => 'mysql',
-            'host' => 'localhost',
-            'db_name' => 'session_db',
-            'port' => '3306',
-            'user_name' => 'session_user',
-            'user_password' => 'session_user_pass',
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'options' => [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => true,
-            ],
-        ]
+    ],
+    'doctrine_db_settings' => [
+        'driver' => 'pdo_mysql',
+        'host' => 'localhost', // 'mysql.tech.dmu.ac.uk'
+        'dbname' => 'm2m_db', // 'p17209674db'
+        'port' => '3306',
+        'user' => 'm2m_user', // 'p17209674_web'
+        'password' => 'm2m_user_pass', // 'lubEd+11'
+        'charset' => 'utf8mb4'
     ],
 ];
 

@@ -18,9 +18,9 @@ class M2MInputValidator
     public function cleanParams1(array $tainted_params)
     {
         $cleaned_params = [];
-var_dump(preg_match("[^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$]",
-        $tainted_params['password']) && strlen($tainted_params['password']) < 21);
-var_dump(!empty($tainted_params['username']) && strlen($tainted_params['username']) < 21);
+//var_dump(preg_match("[^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$]",
+//        $tainted_params['password']) && strlen($tainted_params['password']) < 21);
+//var_dump(!empty($tainted_params['username']) && strlen($tainted_params['username']) < 21);
 
         if (!empty($tainted_params['username']) && strlen($tainted_params['username']) < 21) {
             if (ctype_alnum($tainted_params['username'])) {
@@ -63,8 +63,9 @@ var_dump(!empty($tainted_params['username']) && strlen($tainted_params['username
         }
 
         if (isset($tainted_params['email'])) {
-            $email = filter_var($tainted_params['email'], FILTER_SANITIZE_EMAIL);
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $email != $tainted_params['email']) {
+            $cleaned_params['email'] = filter_var($tainted_params['email'], FILTER_SANITIZE_EMAIL);
+            if (!filter_var($cleaned_params['email'], FILTER_VALIDATE_EMAIL) ||
+                $cleaned_params['email'] != $tainted_params['email']) {
                 return false;
             }
         } else {
