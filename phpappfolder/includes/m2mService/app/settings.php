@@ -17,7 +17,8 @@ $css_path = $app_url . 'css/standard.css';
 //var_dump($app_url);
 define('CSS_PATH', $css_path);
 
-
+$wsdl = 'https://m2mconnect.ee.co.uk/orange-soap/services/MessageServiceByCountry?wsdl';
+define('WSDL', $wsdl);
 
 $settings = [
     "settings" => [
