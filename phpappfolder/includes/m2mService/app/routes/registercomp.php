@@ -58,6 +58,8 @@ $app->post(
             exit();
         }
 
+
+
         unset($_SESSION['unique_id']);
 
 //$time_end = microtime(true);

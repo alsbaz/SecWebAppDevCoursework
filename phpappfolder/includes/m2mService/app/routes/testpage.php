@@ -24,7 +24,7 @@ $app->post(
             }
 
             $result_hash_id = getHashLogin($app, $cleaned_params['username']);
-var_dump($result_hash_id);
+//var_dump($result_hash_id);
             if(empty($result_hash_id)){
                 throw new Exception("Wrong username or password2", 2);
             }
@@ -37,18 +37,24 @@ var_dump($result_hash_id);
             }
 
 
-    }
-            catch(Exception $e) {
-        header("Location: /");
-        switch ($e->getCode()) {
-            case 2:
-                $_SESSION['error'] = $e->getMessage();
-                break;
-            default:
-                $_SESSION['error'] = "An unexpected error occurred, sorry for the inconvenience";
         }
-        exit();
-    }
+                catch(Exception $e) {
+            header("Location: /");
+            switch ($e->getCode()) {
+                case 2:
+                    $_SESSION['error'] = $e->getMessage();
+                    break;
+                default:
+                    $_SESSION['error'] = "An unexpected error occurred, sorry for the inconvenience";
+            }
+            exit();
+        }
+
+        $soapModel = $this->m2mSoapModel;
+        $soapModel->method_to_use = 'sendMessage';
+
+        $test = $soapModel->performSoapCall();
+//var_dump($soapModel->soapFunctionHere());
 //$time_end = microtime(true);
 //$time = ($time_end - $time_start) * 10;
 //var_dump($time);

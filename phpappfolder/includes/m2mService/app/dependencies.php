@@ -30,3 +30,8 @@ $container['m2mBcryptWrapper'] = function () {
   $wrapper = new \M2mService\M2MBcryptWrapper();
   return $wrapper;
 };
+
+$container['m2mSoapModel'] = function () {
+    $model = new \M2mService\M2MSoapModel();
+    return $model;
+};
