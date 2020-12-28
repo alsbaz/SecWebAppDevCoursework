@@ -8,15 +8,10 @@ $app->post(
     '/registercomp',
     function(Request $request, Response $response) use ($app)
     {
-
-//$time_start = microtime(true);
-
         $tainted_params = $request->getParsedBody();
-//var_dump($tainted_params);
 
         $validator = $this->m2mInputValidator;
         $cleaned_params = $validator->cleanParams2($tainted_params);
-//var_dump($cleaned_params);
 
         $hasher = $this->m2mBcryptWrapper;
         if($cleaned_params != false){
@@ -34,11 +29,10 @@ $app->post(
             } elseif($cleaned_params['password'] == false){
                 throw new Exception("Error with password hashing", 9999);
             }
+
             $cleaned_params['unique_id'] = $_SESSION['unique_id'];
-//var_dump($cleaned_params['unique_id']);
 
             $storage_result = storeRegDetails($app, $cleaned_params);
-//var_dump($storage_result);
         }
         catch(Exception $e) {
             header("Location: /register");
@@ -53,21 +47,13 @@ $app->post(
                 default:
                     $_SESSION['error'] = "An unexpected error occurred, sorry for the inconvenience" . $e->getMessage();
             }
-//            var_dump($e->getCode());
-//var_dump($e->getMessage());
             exit();
         }
 
-
-
         unset($_SESSION['unique_id']);
 
-//$time_end = microtime(true);
-//$time = ($time_end - $time_start) * 10;
-//var_dump($time);
-
         return $this->view->render($response,
-            'template_page.html.twig',
+            'template.html.twig',
             [
                 'css_path' => CSS_PATH,
                 'landing_page' => $_SERVER["SCRIPT_NAME"],

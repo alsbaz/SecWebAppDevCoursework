@@ -1,0 +1,41 @@
+{% extends 'banner.html.twig' %}
+{% block content %}
+    <div class="page_content" id="page-content-div">
+        <h3>{{ page_heading_2 }}</h3>
+        <form action="{{ action_send }}" method="post">
+{#            <fieldset class="messageform">#}
+            <fieldset>
+                <legend>Send Message</legend>
+                {% if(error != false) %}
+                    <p class="error">{{ error }}</p>
+                {% else %}
+                    <br>
+                {% endif %}
+                <label for="username">Username:</label>
+                <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="20" maxlength="50">
+                <br><br>
+                <label for="password">Password:</label>
+                <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="20" maxlength="50">
+                <br><br>
+                <label for="msisdn">Device MSISDN:</label>
+                <input id="msisdn" name="msisdn" type="text" value="{{ initial_input_box_value }}" size="20" maxlength="50">
+                <br><br>
+{#                <label for="deliveryButton">Delivery reports:</label>#}
+{#                <input id="deliveryButton" name="deliveryButton" type="radio" value="deliveryReports">#}
+{#                <br><br>#}
+                <label for="message">Message:</label>
+                <textarea rows="5" cols="50" id="message" name="message" type="text"></textarea>
+                <br><br>
+
+                <br>
+                <input type="submit" value="Send">
+            </fieldset>
+        </form>
+
+
+        <p class="curr_page"><a href="{{ landing_page }}">Home</a>
+            <a href="{{ landing_page2 }}">Send Message</a>
+            <a href="{{ landing_page3 }}">View Messages</a>
+            <a href="{{ landing_page4 }}">Log out</a></p>
+    </div>
+{% endblock %}

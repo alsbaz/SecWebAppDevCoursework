@@ -31,11 +31,11 @@ $app = new \Slim\App($container);
 
 require $app_path .'routes.php';
 
-session_regenerate_id();
 //var_dump(session_id());
 //var_dump($_SESSION);
 //var_dump(session_id());
 
+session_regenerate_id(true);
 $app->run();
 
 

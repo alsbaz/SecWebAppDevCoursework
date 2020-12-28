@@ -5,6 +5,7 @@ namespace M2mService;
 class M2MSoapModel
 {
     private $method_to_use;
+    private $params;
     private $username;
     private $password;
     private $device_MSISDN;
@@ -36,26 +37,27 @@ class M2MSoapModel
         $result = null;
         $soap_client_handle = null;
         $soap_client_handle = $this->createSoapClient();
-        var_dump($this->createSoapClient());
 
+        $soap_function = $this->selectSoapCall();
 
         try {
             if ($soap_client_handle !== false) {
-                $this->selectExecuteSoapCall($soap_client_handle);
-//var_dump($soap_function);
+                $call_result = $soap_client_handle->__soapCall($soap_function, $this->params);
             }
+            $this->result = $call_result;
 
-            $this->result = $result;
         } catch(\SoapFault $e) {
-//            trigger_error($e);
-var_dump($e->getMessage());
-var_dump($e->getCode());
+            $_SESSION['error'] = $e->getMessage();
+            header("Location: /sendmessagepage");
+            exit();
+//var_dump($e->getMessage());
+//var_dump($e->getCode());
         }
 
-        }
+    }
 
 
-    private function selectExecuteSoapCall($soap_client_handle)
+    private function selectSoapCall()
     {
         $soap_function = '';
         $soap_call_params = [];
@@ -64,26 +66,33 @@ var_dump($e->getCode());
             case 'sendMessage':
                 $soap_function = 'sendMessage';
                 $soap_call_params = [
-                    'username' => $this->username,
-                    'password' => $this->password,
-                    'deviceMSISDN' => $this->device_MSISDN,
-                    'message' => $this->message,
-                    'deliveryReport' => $this->delivery_report,
-                    'mtBearer' => $this->mt_bearer
+                    'username' => $this->username, //'20_17209674'
+                    'password' => $this->password, //'CGs74bktVKzAHxC',
+                    'deviceMSISDN' => $this->device_MSISDN, //'+447817814149',
+//                    'message' => '&lt;unique_id&gt;skateFastEatAss&lt;/unique_id&gt;' . 'Hello World',//$this->message, //&lt;msg&gt;Bob &amp; Jane&lt;/msg&gt; --> <msg>Bob & Jane</msg>
+                    'message' => '<unique_id>skateFastEatAss</unique_id>' . $this->message, //. 'Hello World',
+                    'deliveryReport' => false, //$this->delivery_report,
+                    'mtBearer' => "SMS",// $this->mt_bearer
                 ];
-
-                $call_result = $soap_client_handle->__soapCall($soap_function, $soap_call_params);
-
-
+                break;
+            case 'peekMessages':
+                $soap_function = 'peekMessages';
+                $soap_call_params = [
+                    'username' => '20_17209674', //$this->username,
+                    'password' => 'CGs74bktVKzAHxC', //$this->password,
+                    'count' => 5, //$this->count,
+                    'deviceMSISDN' => null, //'+447817814149', //$this->device_MSISDN, //THIS MIGHT BE A TYPO CHECK var_dump($soap_client_handle->__getFunctions())
+                    'countryCode' => null, //$this->country_code
+                ];
                 break;
             case 'readMessages': //Dont use
                 $soap_function = 'readMessages';
                 $soap_call_params = [
-                    'username' => $this->username,
-                    'password' => $this->password,
-                    'count' => $this->count,
-                    'deviceMSISDN' => $this->device_MSISDN,
-                    'countryCode' => $this->country_code
+                    'username' => '20_17209674', //$this->username,
+                    'password' => 'CGs74bktVKzAHxC', //$this->password,
+                    'count' => 5, //$this->count,
+                    'deviceMSISDN' => null, //'+447817814149', //$this->device_MSISDN,
+                    'countryCode' => null, //$this->country_code
                 ];
                 break;
             case 'waitForMessage':
@@ -109,16 +118,6 @@ var_dump($e->getCode());
                     'mtBearer' => $this->mt_bearer
                 ];
                 break;
-            case 'peekMessages':
-                $soap_function = 'peekMessages';
-                $soap_call_params = [
-                    'username' => $this->username,
-                    'password' => $this->password,
-                    'count' => $this->count,
-                    'deviceMSISDN' => $this->device_MSISDN, //THIS MIGHT BE A TYPO CHECK var_dump($soap_client_handle->__getFunctions())
-                    'countryCode' => $this->country_code
-                ];
-                break;
 //            case 'flushMessages': //Most likely these wont be needed by us
 //                                  //But they are still possible calls
 //                break;
@@ -140,9 +139,9 @@ var_dump($e->getCode());
             default:
                 $soap_function = null;
         }
+        $this->params = $soap_call_params;
 
-
-//        return $soap_function;
+        return $soap_function;
     }
 
 
@@ -156,8 +155,8 @@ var_dump($e->getCode());
         {
 
             $soap_client_handle = new \SoapClient($wsdl, $soapclient_attributes);
-            var_dump($soap_client_handle->__getFunctions());
-//            var_dump($soap_client_handle->__getTypes());
+//var_dump($soap_client_handle->__getFunctions());
+//var_dump($soap_client_handle->__getTypes());
 
         } catch (\SoapFault $e)
         {

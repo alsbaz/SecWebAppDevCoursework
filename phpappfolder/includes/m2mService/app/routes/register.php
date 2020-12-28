@@ -12,6 +12,7 @@ $app->get('/register', function (Request $request, Response $response) use ($app
         $errorMessage = $_SESSION['error'];
         unset($_SESSION['error']);
     }
+
     return $this->view->render($response,
         'registerform.html.twig',
         [

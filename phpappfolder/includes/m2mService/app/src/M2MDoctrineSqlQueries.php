@@ -32,7 +32,7 @@ class M2MDoctrineSqlQueries
 
         $store_result['outcome'] = $queryBuilder->execute();
         $store_result['sql_query'] = $queryBuilder->getSQL();
-
+//var_dump($store_result);
         return $store_result;
     }
 
