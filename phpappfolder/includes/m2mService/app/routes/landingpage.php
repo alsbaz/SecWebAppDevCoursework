@@ -78,6 +78,7 @@ $app->any(
                 'page_heading_2' => 'M2M Services',
                 'landing_page1' => 'landingpage',
                 'landing_page2' => 'sendmessagepage',
+                'landing_page3' => 'readmessagepage',
                 'landing_page4' => $_SERVER["SCRIPT_NAME"],
                 'message' => $message,
             ]);

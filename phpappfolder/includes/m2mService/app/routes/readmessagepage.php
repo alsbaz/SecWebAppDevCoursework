@@ -5,7 +5,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 $app->get(
-    '/sendmessagepage',
+    '/readmessagepage',
     function (Request $request, Response $response) use ($app) {
         if(!isset($_SESSION['unique_id'])) {
             header("Location: /");
@@ -21,12 +21,12 @@ $app->get(
         }
 
         return $this->view->render($response,
-            'sendmessage.html.twig',
+            'readmessage.html.twig',
             [
                 'css_path' => CSS_PATH,
-                'action_send' => 'notImportantYet',
+                'action_read' => 'notImportantYet',
                 'page_heading_1' => 'M2M Services',
-                'page_heading_2' => 'Enter the details to send message',
+                'page_heading_2' => 'Enter the details to read message(s)',
                 'error' => $error,
                 'landing_page' => 'landingpage',
                 'landing_page2' => 'sendmessagepage',
