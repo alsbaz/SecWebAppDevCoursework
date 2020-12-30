@@ -4,23 +4,13 @@ namespace M2mService;
 
 class M2MInputValidator
 {
-    private $cleaned_params = [];
-    public function __construct()
-    {
+    public function __construct() {}
 
-    }
-
-    public function __destruct()
-    {
-
-    }
+    public function __destruct() {}
 
     public function cleanParams1(array $tainted_params)
     {
         $cleaned_params = [];
-//var_dump(preg_match("[^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$]",
-//        $tainted_params['password']) && strlen($tainted_params['password']) < 21);
-//var_dump(!empty($tainted_params['username']) && strlen($tainted_params['username']) < 21);
 
         // if the username is not empty and is less than 21 characters and is greater than 5 characters
         if (!empty($tainted_params['username']) && strlen($tainted_params['username']) < 21 && strlen($tainted_params['username']) > 5) {
@@ -37,13 +27,13 @@ class M2MInputValidator
             return false;
         }
 
-        /* Regex component breakdown:
+        /** Regex component breakdown:
         (?=.*[a-z]) Must contain at least one lowercase character
         (?=.*[A-Z]) Must contain at least one uppercase character
         (?=.*\d) Must contain at least 1 digit
         [A-Za-z\d!@#£$%^&:;<>,.?/~_+=|] Rest of the characters (accepts uppercase, lowercase, digits and some symbols
         {8,20} Must be between 8 and 20 characters
-        */
+        **/
 
         // old regex: ^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$
         // new regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#£$%^&:;<>,.?/~_+=|]{8,20}$
@@ -74,7 +64,7 @@ class M2MInputValidator
         if (isset($tainted_params['password2'])) {
             // test if password matches the verify password entered
             if ($cleaned_params['password'] == $tainted_params['password2']) {
-                    // assign password 2 as clean (password 1 already checked to be clean
+                    // assign password 2 as clean password 1 already checked to be clean
                     // so if it matches it must also be clean
                     $cleaned_params['password2'] = $tainted_params['password2'];
                 } else {

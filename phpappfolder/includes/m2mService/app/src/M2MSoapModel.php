@@ -47,7 +47,20 @@ class M2MSoapModel
             $this->result = $call_result;
 
         } catch(\SoapFault $e) {
-            $_SESSION['error'] = $e->getMessage();
+            switch ($e->getMessage()) {
+
+
+                case 'java.lang.NullPointerException':
+                    $_SESSION['error'] = 'Please enter a MSISDN number. ' . $e->getMessage();
+                    break;
+                case 'com.orange.telematics.otel.soap.MessageServiceException: login failed':
+                    $_SESSION['error'] = 'Please try again with valid login credentials. ' . $e->getMessage();
+                    break;
+                default:
+                    $_SESSION['error'] = 'Something went wrong, please try again. ' . $e->getMessage();
+                    break;
+            }
+//            unset($_SESSION['message']);
             header("Location: /sendmessagepage");
             exit();
 //var_dump($e->getMessage());
@@ -70,7 +83,7 @@ class M2MSoapModel
                     'password' => $this->password, //'CGs74bktVKzAHxC',
                     'deviceMSISDN' => $this->device_MSISDN, //'+447817814149',
 //                    'message' => '&lt;unique_id&gt;skateFastEatAss&lt;/unique_id&gt;' . 'Hello World',//$this->message, //&lt;msg&gt;Bob &amp; Jane&lt;/msg&gt; --> <msg>Bob & Jane</msg>
-                    'message' => '<unique_id>skateFastEatAss</unique_id>' . $this->message, //. 'Hello World',
+                    'message' => '<unique_id>skateFastEatAss</unique_id><message_content>' . $this->message . '</message_content>', //. 'Hello World',
                     'deliveryReport' => false, //$this->delivery_report,
                     'mtBearer' => "SMS",// $this->mt_bearer
                 ];
@@ -78,20 +91,20 @@ class M2MSoapModel
             case 'peekMessages':
                 $soap_function = 'peekMessages';
                 $soap_call_params = [
-                    'username' => '20_17209674', //$this->username,
-                    'password' => 'CGs74bktVKzAHxC', //$this->password,
-                    'count' => 5, //$this->count,
-                    'deviceMSISDN' => null, //'+447817814149', //$this->device_MSISDN, //THIS MIGHT BE A TYPO CHECK var_dump($soap_client_handle->__getFunctions())
+                    'username' => $this->username, //'20_17209674',
+                    'password' => $this->password, //'CGs74bktVKzAHxC',
+                    'count' => $this->count, //5,
+                    'deviceMSISDN' => $this->device_MSISDN, //null, //'+447817814149',  //THIS MIGHT BE A TYPO CHECK var_dump($soap_client_handle->__getFunctions())
                     'countryCode' => null, //$this->country_code
                 ];
                 break;
             case 'readMessages': //Dont use
                 $soap_function = 'readMessages';
                 $soap_call_params = [
-                    'username' => '20_17209674', //$this->username,
-                    'password' => 'CGs74bktVKzAHxC', //$this->password,
-                    'count' => 5, //$this->count,
-                    'deviceMSISDN' => null, //'+447817814149', //$this->device_MSISDN,
+                    'username' => $this->username, //'20_17209674',
+                    'password' => $this->password, //'CGs74bktVKzAHxC',
+                    'count' => $this->count, //5,
+                    'deviceMSISDN' => $this->device_MSISDN, //'+447817814149', //null,
                     'countryCode' => null, //$this->country_code
                 ];
                 break;

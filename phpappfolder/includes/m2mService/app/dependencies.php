@@ -35,3 +35,8 @@ $container['m2mSoapModel'] = function () {
     $model = new \M2mService\M2MSoapModel();
     return $model;
 };
+
+$container['m2mMessageHandler'] = function () {
+    $handler = new \M2mService\M2MMessageHandler();
+    return $handler;
+};

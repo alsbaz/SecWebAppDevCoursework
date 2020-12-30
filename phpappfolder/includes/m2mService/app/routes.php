@@ -8,4 +8,5 @@ require $routes_path . 'registercomp.php';
 require $routes_path . 'landingpage.php';
 require $routes_path . 'sendmessagepage.php';
 require $routes_path . 'readmessagepage.php';
+require $routes_path . 'downloadmessagepage.php';
 require $routes_path . 'notImportantYet.php';

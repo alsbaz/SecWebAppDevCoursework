@@ -1,27 +1,34 @@
 <?php
 
+
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-$app->post(
-    '/nameHere',
-    function(Request $request, Response $response) use ($app)
-    {
-        if(!isset($_SESSION['unique_id'])) { //For any logged in content
+$app->get(
+    '/downloadmessagepage',
+    function (Request $request, Response $response) use ($app) {
+        if(!isset($_SESSION['unique_id'])) {
             header("Location: /");
             $_SESSION['error'] = 'Please log in before accessing that';
             exit();
         }
 
-        $error = $_SESSION['error'];
+        $error = false;
+
+        if(isset($_SESSION['error'])) {
+            $error = $_SESSION['error'];
+            unset($_SESSION['error']);
+        }
+
+        $_SESSION['message'] = 'DownComp';
 
         return $this->view->render($response,
-            'template.html.twig',
+            'readmessage.html.twig',
             [
                 'css_path' => CSS_PATH,
                 'action_read' => 'landingpage',
                 'page_heading_1' => 'M2M Services',
-                'page_heading_2' => 'Enter the details to read message(s)',
+                'page_heading_2' => 'Enter the details to download messages',
                 'error' => $error,
                 'landing_page' => 'landingpage',
                 'landing_page2' => 'sendmessagepage',
