@@ -1,5 +1,7 @@
 {% extends 'banner.html.twig' %}
 {% block content %}
+{#    enable the meta header to refresh page every 10 seconds   #}
+{#    <meta http-equiv="refresh" content="1" >#}
     <div id="page-content-div">
         <h3>{{ page_heading_2 }}</h3>
         {% if(message != false) %}
@@ -17,7 +19,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for nested_array in message_array %} #}
+                    {% for nested_array in message_array %}
                     <tr>
                         {% for value in nested_array %}
                         <td>{{ value }}</td>
@@ -27,10 +29,5 @@
                 </tbody>
             </table>
         {% endif %}
-        <p class="curr_page"><a href="{{ landing_page1 }}">Home</a>
-            <a href="{{ landing_page2 }}">Send Message</a>
-            <a href="{{ landing_page3 }}">View Messages</a>
-            <a href="{{ landing_page4 }}">Download Messages</a>
-            <a href="{{ landing_page5 }}">Log out</a></p>
     </div>
 {% endblock %}

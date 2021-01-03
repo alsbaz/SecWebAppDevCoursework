@@ -16,7 +16,9 @@ $app->get('/register', function (Request $request, Response $response) use ($app
     return $this->view->render($response,
         'registerform.html.twig',
         [
+            'logout' => true,
             'css_path' => CSS_PATH,
+            'page_title' => 'M2M Services',
             'landing_page' => $_SERVER["SCRIPT_NAME"],
             'action1' => 'registercomp',
             'page_heading_1' => 'Registration',

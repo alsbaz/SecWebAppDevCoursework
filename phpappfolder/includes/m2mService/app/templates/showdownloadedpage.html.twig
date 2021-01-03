@@ -1,0 +1,34 @@
+{% extends 'banner.html.twig' %}
+{% block content %}
+    <div id="page-content-div">
+        <h3>{{ page_heading_2 }}</h3>
+        <form action="{{ action }}" method="post">
+            {#            <fieldset class="messageform">#}
+            <fieldset>
+                <legend>Read Messages</legend>
+                {% if(error != false) %}
+                    <p class="error">{{ error }}</p>
+                {% else %}
+                    <p>Enter at least 1 property to search by</p>
+                {% endif %}
+                <label for="sourcemsisdn">Source MSISDN:</label>
+                <input id="sourcemsisdn" name="sourcemsisdn" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="username">Username:</label>
+                <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="email">Email:</label>
+                <input id="email" name="email" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="receivedtime">Received after:</label>
+                <input id="receivedtime" name="receivedtime" type="text" value="{{ initial_time_box_value }}" size="30" maxlength="50">
+                <br><br>
+
+                <br>
+                <input type="submit" value="Send">
+            </fieldset>
+        </form>
+
+
+    </div>
+{% endblock %}

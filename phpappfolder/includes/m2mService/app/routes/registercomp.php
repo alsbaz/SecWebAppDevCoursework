@@ -4,24 +4,31 @@ use Doctrine\DBAL\DriverManager;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-$app->post(
+$app->post( // change to any for testing
     '/registercomp',
     function(Request $request, Response $response) use ($app)
     {
-        $tainted_params = $request->getParsedBody();
 
+        $tainted_params = $request->getParsedBody();
+//    if ($tainted_params == null) {
+//        $tainted_params['username'] = bin2hex(random_bytes(5));
+//        $tainted_params['password'] = 'bobBob67';
+//        $tainted_params['password2'] = 'bobBob67';
+//        $tainted_params['email'] = bin2hex(random_bytes(5)) . '@gmail.com';
+//    }
         $validator = $this->m2mInputValidator;
         $cleaned_params = $validator->cleanParams2($tainted_params);
 
         $hasher = $this->m2mBcryptWrapper;
-        if($cleaned_params != false){
+        if ($cleaned_params != false) {
             $plain_password = $cleaned_params['password'];
             $cleaned_params['password'] = $hasher->hashPassword($plain_password);
         }
 
-        if(!isset($_SESSION['unique_id'])){
+        if (!isset($_SESSION['unique_id'])) {
             $_SESSION['unique_id'] = bin2hex(random_bytes(10));
         }
+
 
         try {
             if($cleaned_params == false){
@@ -55,7 +62,9 @@ $app->post(
         return $this->view->render($response,
             'template.html.twig',
             [
+                'logout' => true,
                 'css_path' => CSS_PATH,
+                'page_title' => 'M2M Services',
                 'landing_page' => $_SERVER["SCRIPT_NAME"],
             ]);
     });
@@ -70,7 +79,7 @@ function storeRegDetails($app, $cleaned_params)
     $db_connection = DriverManager::getConnection($db_connection_settings);
 
     $queryBuilder = $db_connection->createQueryBuilder();
-    $storage_result = $doctrine_queries::queryStoreUserData($queryBuilder, $cleaned_params); //$hashed_password
+    $storage_result = $doctrine_queries::queryStoreUserData($queryBuilder, $cleaned_params);
 
     return $storage_result;
 }

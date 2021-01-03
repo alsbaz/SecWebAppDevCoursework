@@ -12,13 +12,13 @@
                     <br>
                 {% endif %}
                 <label for="username">Username:</label>
-                <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="20" maxlength="50">
+                <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size=30" maxlength="50">
                 <br><br>
                 <label for="password">Password:</label>
-                <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="20" maxlength="50">
+                <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
                 <label for="msisdn">Device MSISDN:</label>
-                <input id="msisdn" name="msisdn" type="text" value="{{ initial_input_box_value }}" size="20" maxlength="50">
+                <input id="msisdn" name="msisdn" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
 {#                <label for="deliveryButton">Delivery reports:</label>#}
 {#                <input id="deliveryButton" name="deliveryButton" type="radio" value="deliveryReports">#}
@@ -33,10 +33,6 @@
         </form>
 
 
-        <p class="curr_page"><a href="{{ landing_page }}">Home</a>
-            <a href="{{ landing_page2 }}">Send Message</a>
-            <a href="{{ landing_page3 }}">View Messages</a>
-            <a href="{{ landing_page4 }}">Download Messages</a>
-            <a href="{{ landing_page5 }}">Log out</a></p>
+
     </div>
 {% endblock %}

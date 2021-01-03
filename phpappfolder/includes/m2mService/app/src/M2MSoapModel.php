@@ -61,7 +61,7 @@ class M2MSoapModel
                     break;
             }
 //            unset($_SESSION['message']);
-            header("Location: /sendmessagepage");
+            header("Location: " . $_SERVER['HTTP_REFERER']);
             exit();
 //var_dump($e->getMessage());
 //var_dump($e->getCode());
@@ -83,7 +83,19 @@ class M2MSoapModel
                     'password' => $this->password, //'CGs74bktVKzAHxC',
                     'deviceMSISDN' => $this->device_MSISDN, //'+447817814149',
 //                    'message' => '&lt;unique_id&gt;skateFastEatAss&lt;/unique_id&gt;' . 'Hello World',//$this->message, //&lt;msg&gt;Bob &amp; Jane&lt;/msg&gt; --> <msg>Bob & Jane</msg>
-                    'message' => '<unique_id>skateFastEatAss</unique_id><message_content>' . $this->message . '</message_content>', //. 'Hello World',
+                    'message' => '<unique_id>skateFastEatAss</unique_id><username>' . $_SESSION['username'] . '</username><email>' . $_SESSION['email'] . '</email><message_content>' . $this->message . '</message_content>',
+                    'deliveryReport' => false, //$this->delivery_report,
+                    'mtBearer' => "SMS",// $this->mt_bearer
+                ];
+                break;
+            case 'sendMessageAuto':
+                $soap_function = 'sendMessage';
+                $soap_call_params = [
+                    'username' => '20_17209674',
+                    'password' => 'CGs74bktVKzAHxC',
+                    'deviceMSISDN' => '+447817814149',
+//                    'message' => '&lt;unique_id&gt;skateFastEatAss&lt;/unique_id&gt;' . 'Hello World',//$this->message, //&lt;msg&gt;Bob &amp; Jane&lt;/msg&gt; --> <msg>Bob & Jane</msg>
+                    'message' => '<unique_id>skateFastEatAss</unique_id><username>' . $_SESSION['username'] . '</username><email>' . $_SESSION['email'] . '</email><message_content>' . bin2hex(random_bytes(5)) . '</message_content>',
                     'deliveryReport' => false, //$this->delivery_report,
                     'mtBearer' => "SMS",// $this->mt_bearer
                 ];

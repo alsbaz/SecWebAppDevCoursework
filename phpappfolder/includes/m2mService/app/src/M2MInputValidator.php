@@ -67,8 +67,8 @@ class M2MInputValidator
                     // assign password 2 as clean password 1 already checked to be clean
                     // so if it matches it must also be clean
                     $cleaned_params['password2'] = $tainted_params['password2'];
-                } else {
-                    return false;
+            } else {
+                return false;
             }
         } else {
             return false;

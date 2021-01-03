@@ -14,11 +14,12 @@ $app->get('/', function(Request $request, Response $response)
     }
     $_SESSION['message'] = 'Login';
 //var_dump($_SESSION);
-
     return $this->view->render($response,
     'homepageform.html.twig',
     [
+        'logout' => true,
         'css_path' => CSS_PATH,
+        'page_title' => 'M2M Services',
         'landing_page' => $_SERVER["SCRIPT_NAME"],
         'action1' => 'landingpage',
         'action2' => 'register',
