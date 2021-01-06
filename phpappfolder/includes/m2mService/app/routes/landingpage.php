@@ -12,10 +12,11 @@ $app->any(
 //$time_end = microtime(true);
 //$time = ($time_end - $time_start) * 10;
 //var_dump($time);
-        if(!isset($_SESSION['message'])) $_SESSION['message'] = 'SendCompAuto'; //If want to generate messages automatically
+//        if(!isset($_SESSION['message'])) $_SESSION['message'] = 'SendCompAuto'; //If want to generate messages automatically
         $tainted_params = $request->getParsedBody();
         $message = false;
         $result_array = false;
+        $rank = true;
         try {
             if(isset($_SESSION['message'])) switch($_SESSION['message']) {
                 case 'Login':
@@ -46,12 +47,16 @@ $app->any(
                 case 'SendComp':
                     if($tainted_params == null) break;
                     $method = 'sendMessage';
-//var_dump($tainted_params);
+
                     if ($tainted_params['message'] == '') {
                         throw new Exception("Please enter a message to send", 3);
-                    } elseif (strlen($tainted_params['message']) > 39015) {
+                    } elseif (strlen($tainted_params['message']) > 65) {
                         throw new Exception("Message too long", 3);
                     }
+
+                    $sanitiser = $this->m2mInputValidator;
+                    $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
+
                     $result = doSoapFunction($app, $tainted_params, $method);
                     if($result == true) $message = 'Message sent successfully.';
                     break;
@@ -63,27 +68,38 @@ $app->any(
                 case 'ReadComp':
                     if($tainted_params == null) break;
                     $method = 'peekMessages';
-                    $result_messages = doSoapFunction($app, $tainted_params, $method);
 
+                    $sanitiser = $this->m2mInputValidator;
+                    $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
+                    $result_messages = doSoapFunction($app, $cleaned_params, $method);
                     $handler = $this->m2mMessageHandler;
+//var_dump($result_messages);
                     $result_array = $handler->splitMessageRegex($result_messages);
                     if($result_array == null) $message = 'No messages have been received.';
-//var_dump($result_messages);
                     break;
                 case 'DownloadComp':
                     if($tainted_params == null) break;
-                    $method = 'readMessages';
-                    $result_messages = doSoapFunction($app, $tainted_params, $method);
+                    $method = 'peekMessages';
+
+                    $sanitiser = $this->m2mInputValidator;
+                    $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
+
+                    $result_messages = doSoapFunction($app, $cleaned_params, $method);
                     if($result_messages == null) {
                         $message = 'No messages have been received.';
                         break;
                     }
-//var_dump($result_messages);
                     $handler = $this->m2mMessageHandler;
-                    $result_array = $handler->splitMessageRegex($result_messages);
-//var_dump($result_array);
-                    $result = storageM2mMessages($app, $result_array);
-                    if ($result == true) $message = 'Successfully saved to database.';
+                    $split_array = $handler->splitMessageRegex($result_messages);
+//var_dump($split_array);
+                    if($split_array != null) {
+                        $result_array = storageM2mMessages($app, $split_array);
+                        if ($result_array == true) {
+                            $message = 'Successfully saved to database.';
+                        } else {
+                            $message = 'No new messages.';
+                        }
+                    } else $message = 'No new messages.';
                     break;
                 case 'ShowDownloaded':
                     if($tainted_params == null) break;
@@ -97,15 +113,41 @@ $app->any(
                             throw new Exception("Please enter the date and time in valid format", 3);
                         }
                     }
-//var_dump($tainted_params);
+
+                    $sanitiser = $this->m2mInputValidator;
+                    $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
+
                     if(empty($tainted_params))
                         throw new Exception("Please enter at least one parameter to search by", 3);
-                    $result_array = getM2mMessages($app, $tainted_params);
-//var_dump($result_array);
+                    $result_array = getM2mMessages($app, $cleaned_params);
+                    if($result_array == null) $message = 'No matches were found.';
+                    break;
+                case 'AdminSetting':
+//var_dump($tainted_params);
+                    if($tainted_params['heaterTemp'] == '' || $tainted_params['lastDigit'] == ''){
+                        throw new Exception("Please fill each field", 3);
+                    } elseif(strlen($tainted_params['heaterTemp']) > 3 || strlen($tainted_params['lastDigit']) > 1) {
+                        throw new Exception("Funny one, please be serious", 3);
+                    }
+
+                    $query_outcome = queryUpdateM2mSwitch($app, $tainted_params);
+                    if($query_outcome['outcome'] == 1) {
+                        $message = 'Successfully updated switchboard status.';
+                    }
+                    elseif ($query_outcome['outcome'] == 0) {
+                        $message = 'Switchboard wasn\'t changed.';
+                    }
                     break;
                 default:
                     break;
+            } else {
+                $message = 'Switchboard should appear now!';
             }
+
+            $limit = 10;
+            $feed_message = 'Most recent ' . $limit . ' messages from the database:';
+            $result_array1 = queryRetrieveM2mMessagesLimit($app, $limit);
+            #
         } catch (Exception $e) {
             switch ($e->getCode()) {
                 case 2:
@@ -142,64 +184,84 @@ $app->any(
                 'page_heading_1' => 'M2M Services',
                 'page_heading_2' => 'M2M Services',
                 'message' => $message,
+                'feed_message' => $feed_message,
                 'message_array' => $result_array,
+                'message_array_feed' => $result_array1,
                 'landing_page' => 'landingpage',
                 'landing_page2' => 'sendmessagepage',
                 'landing_page3' => 'readmessagepage',
                 'landing_page4' => 'downloadmessagepage',
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
                 'landing_page6' =>'showdownloadedpage',
+                'landing_page7' => 'adminsettings',
+                'rank' => $rank,
 
-            ]);
+        ]);
     });
 
-function getHashLogin($app, $cleaned_param)
-{
-    $storage_result = [];
-    $store_result = '';
-    $db_connection_settings = $app->getContainer()->get('doctrine_db_settings');
-    $doctrine_queries = $app->getContainer()->get('m2mDoctrineSqlQueries');
-    $db_connection = DriverManager::getConnection($db_connection_settings);
-
-    $queryBuilder = $db_connection->createQueryBuilder();
-    $hash_to_check = $doctrine_queries::queryRetrieveUserData($queryBuilder, $cleaned_param);
-    return $hash_to_check;
-}
-
-function doSoapFunction($app, $tainted_params, $method)
+function doSoapFunction($app, $params, $method)
 {
     $soapModel = $app->getContainer()->get('m2mSoapModel');
     $soapModel->method_to_use = $method;
-    if(isset($tainted_params['username'])) $soapModel->username = $tainted_params['username'];
-    if(isset($tainted_params['password'])) $soapModel->password = $tainted_params['password'];
-    if(isset($tainted_params['msisdn'])) $soapModel->device_MSISDN = $tainted_params['msisdn'];
-    if(isset($tainted_params['count'])) $soapModel->count = $tainted_params['count'];
-    if(isset($tainted_params['message'])) $soapModel->message = $tainted_params['message'];
-
+    if(isset($params['username'])) $soapModel->username = $params['username'];
+    if(isset($params['password'])) $soapModel->password = $params['password'];
+    if(isset($params['msisdn'])) $soapModel->device_MSISDN = $params['msisdn'];
+    if(isset($params['count'])) $soapModel->count = $params['count'];
+    if(isset($params['message'])) $soapModel->message = $params['message'];
     $test = $soapModel->performSoapCall();
 
     return $soapModel->result;
 }
 
+function getHashLogin($app, $param)
+{
+    $db_handlers = dbSetupConnection($app);
+    $hash_to_check = $db_handlers['doctrine_queries']::queryRetrieveUserData($db_handlers['query_builder'], $param);
+
+    return $hash_to_check;
+}
+
 function storageM2mMessages($app, $params)
 {
-    $db_connection_settings = $app->getContainer()->get('doctrine_db_settings');
-    $doctrine_queries = $app->getContainer()->get('m2mDoctrineSqlQueries');
-    $db_connection = DriverManager::getConnection($db_connection_settings);
-
-    $queryBuilder = $db_connection->createQueryBuilder();
-    $storage_result = $doctrine_queries::queryStoreM2mMessages($queryBuilder, $params);
+    $db_handlers = dbSetupConnection($app);
+    $db_handlers['query_builder2'] = $db_handlers['connection']->createQueryBuilder();
+    $storage_result = $db_handlers['doctrine_queries']::queryStoreM2mMessages($db_handlers['query_builder'], $params, $db_handlers['query_builder2']);
 
     return $storage_result;
 }
 
 function getM2mMessages($app, array $params)
 {
-    $db_connection_settings = $app->getContainer()->get('doctrine_db_settings');
-    $doctrine_queries = $app->getContainer()->get('m2mDoctrineSqlQueries');
-    $db_connection = DriverManager::getConnection($db_connection_settings);
+    $db_handlers = dbSetupConnection($app);
+    $matching_db_entries = $db_handlers['doctrine_queries']::queryRetrieveM2mMessages($db_handlers['query_builder'], $params);
 
-    $queryBuilder = $db_connection->createQueryBuilder();
-    $matching_db_entries = $doctrine_queries::queryRetrieveM2mMessages($queryBuilder, $params);
     return $matching_db_entries;
 }
+
+function queryUpdateM2mSwitch($app, $params)
+{
+    $db_handlers = dbSetupConnection($app);
+    $storage_result = $db_handlers['doctrine_queries']::queryUpdateM2mSwitch($db_handlers['query_builder'], $params);
+
+    return $storage_result;
+}
+
+function queryRetrieveM2mMessagesLimit($app, $limit)
+{
+    $db_handlers = dbSetupConnection($app);
+    $storage_result = $db_handlers['doctrine_queries']::queryRetrieveM2mMessagesLimit($db_handlers['query_builder'], $limit);
+
+    return $storage_result;
+
+}
+
+function dbSetupConnection($app)
+{
+    $db_handlers['settings'] = $app->getContainer()->get('doctrine_db_settings');
+    $db_handlers['doctrine_queries'] = $app->getContainer()->get('m2mDoctrineSqlQueries');
+    $db_handlers['connection'] = DriverManager::getConnection($db_handlers['settings']);
+    $db_handlers['query_builder'] = $db_handlers['connection']->createQueryBuilder();
+
+    return $db_handlers;
+}
+

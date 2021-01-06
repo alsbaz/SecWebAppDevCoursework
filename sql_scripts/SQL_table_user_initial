@@ -17,14 +17,27 @@ CREATE TABLE m2m_users (
 DROP TABLE IF EXISTS m2m_messages;
 CREATE TABLE m2m_messages (
     `sourcemsisdn` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
-    `destinationmsisdn` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
     `receivedtime` datetime NOT NULL,
     `bearer` varchar (10) COLLATE utf8_unicode_ci NOT NULL,
     `username` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
-    `email` varchar (50) COLLATE utf8_unicode_ci NOT NULL,
-    `message_content` varchar (100) COLLATE utf8_unicode_ci
+    `message_content` varchar (100) COLLATE utf8_unicode_ci,
+    CONSTRAINT PK_time_message PRIMARY KEY(`receivedtime`, `message_content`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='CURRENT_TIMESTAMP';
 
+DROP TABLE IF EXISTS m2m_switch;
+CREATE TABLE m2m_switch (
+    `switchboard_name` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
+    `switch1` tinyint NOT NULL,
+    `switch2` tinyint NOT NULL,
+    `switch3` tinyint NOT NULL,
+    `switch4` tinyint NOT NULL,
+    `fan` tinyint NOT NULL,
+    `heaterTemp` tinyint NOT NULL,
+    `lastDigit` tinyint NOT NULL,
+    PRIMARY KEY (`switchboard_name`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='CURRENT_TIMESTAMP';
+
+INSERT INTO m2m_switch (switchboard_name, switch1, switch2, switch3, switch4, fan, heaterTemp, lastDigit) VALUES ('main', 1, 1, 1, 1, 0, 26, 8);
 
 DROP USER m2m_user@localhost;
 SHOW GRANTS FOR m2m_user@localhost;

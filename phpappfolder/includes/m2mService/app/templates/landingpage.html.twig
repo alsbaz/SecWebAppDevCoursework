@@ -5,29 +5,54 @@
     <div id="page-content-div">
         <h3>{{ page_heading_2 }}</h3>
         {% if(message != false) %}
-            <p>{{ message }}</p>
-        {% else %}
-            <br>
+{#            <fieldset>#}
+                <p>{{ message }}</p>
+{#            </fieldset>#}
         {% endif %}
-        {% if(message_array == true) %}
-            <table>
+        <fieldset id="landing_table">
+            <legend>{{ feed_message }}</legend>
+            <table id="tableLanding">
                 <thead>
-                    <tr>
-                        {% for header in message_array.0|keys %}
-                            <th>{{ header }}</th>
-                        {% endfor %}
-                    </tr>
+                <tr>
+                    {% for header in message_array_feed.0|keys %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
                 </thead>
                 <tbody>
-                    {% for nested_array in message_array %}
+                {% for nested_array in message_array_feed %}
                     <tr>
                         {% for value in nested_array %}
-                        <td>{{ value }}</td>
+                            <td>{{ value }}</td>
                         {% endfor %}
                     </tr>
-                    {% endfor %}
+                {% endfor %}
                 </tbody>
             </table>
+        </fieldset>
+        {% if(message_array == true) %}
+            <fieldset>
+                <legend>Results:</legend>
+                <table id="tableLanding">
+                    <thead>
+                        <tr>
+                            {% for header in message_array.0|keys %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nested_array in message_array %}
+                        <tr>
+                            {% for value in nested_array %}
+                            <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </fieldset>
         {% endif %}
+
     </div>
 {% endblock %}

@@ -1,11 +1,10 @@
 <?php
 
-
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 $app->get(
-    '/sendmessagepage',
+    '/adminsettings',
     function (Request $request, Response $response) use ($app) {
         if(!isset($_SESSION['unique_id'])) {
             header("Location: /");
@@ -21,16 +20,16 @@ $app->get(
             unset($_SESSION['error']);
         }
 
-        $_SESSION['message'] = 'SendComp';
+        $_SESSION['message'] = 'AdminSetting';
 
         return $this->view->render($response,
-            'sendmessage.html.twig',
+            'adminsettings.html.twig',
             [
                 'css_path' => CSS_PATH,
                 'page_title' => 'M2M Services',
-                'action_send' => 'landingpage',
+                'action' => 'landingpage',
                 'page_heading_1' => 'M2M Services',
-                'page_heading_2' => 'Enter the details to send message',
+                'page_heading_2' => 'Change the details of the switchboard',
                 'error' => $error,
                 'landing_page' => 'landingpage',
                 'landing_page2' => 'sendmessagepage',
@@ -40,7 +39,5 @@ $app->get(
                 'landing_page6' =>'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
                 'rank' => $rank,
-
-
-            ]);
+        ]);
     });

@@ -7,23 +7,23 @@
             <fieldset>
                 <legend>Read Message</legend>
                 {% if(error != false) %}
-                    <p class="error">{{ error }}</p>
+                    <div class="error">{{ error }}</div>
                 {% else %}
                     <br>
                 {% endif %}
-                <label for="username">Username:</label>
+                <label for="username">Username:</label><br>
                 <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
-                <label for="password">Password:</label>
+                <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
-                <label for="msisdn">Device MSISDN:</label>
+                <label for="msisdn">Device MSISDN:</label><br>
                 <input id="msisdn" name="msisdn" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
                 {#                <label for="deliveryButton">Delivery reports:</label>#}
                 {#                <input id="deliveryButton" name="deliveryButton" type="radio" value="deliveryReports">#}
                 {#                <br><br>#}
-                <label for="count">Number of Messages:</label>
+                <label for="count">Number of Messages:</label><br>
                 <input id="count" name="count" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
 

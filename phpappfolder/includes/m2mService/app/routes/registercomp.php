@@ -9,33 +9,20 @@ $app->post( // change to any for testing
     function(Request $request, Response $response) use ($app)
     {
 
-        $tainted_params = $request->getParsedBody();
-//    if ($tainted_params == null) {
-//        $tainted_params['username'] = bin2hex(random_bytes(5));
-//        $tainted_params['password'] = 'bobBob67';
-//        $tainted_params['password2'] = 'bobBob67';
-//        $tainted_params['email'] = bin2hex(random_bytes(5)) . '@gmail.com';
-//    }
-        $validator = $this->m2mInputValidator;
-        $cleaned_params = $validator->cleanParams2($tainted_params);
 
-        $hasher = $this->m2mBcryptWrapper;
-        if ($cleaned_params != false) {
-            $plain_password = $cleaned_params['password'];
-            $cleaned_params['password'] = $hasher->hashPassword($plain_password);
-        }
 
-        if (!isset($_SESSION['unique_id'])) {
-            $_SESSION['unique_id'] = bin2hex(random_bytes(10));
-        }
+
+
+
+
 
 
         try {
-            if($cleaned_params == false){
-                throw new Exception("Incorrect inputs, please try again.", 2);
-            } elseif($cleaned_params['password'] == false){
-                throw new Exception("Error with password hashing", 9999);
-            }
+//            if($cleaned_params == false){
+//                throw new Exception("Incorrect inputs, please try again.", 2);
+//            } elseif($cleaned_params['password'] == false){
+//                throw new Exception("Error with password hashing", 9999);
+//            }
 
             $cleaned_params['unique_id'] = $_SESSION['unique_id'];
 
@@ -70,16 +57,16 @@ $app->post( // change to any for testing
     });
 
 
-function storeRegDetails($app, $cleaned_params)
-{
-    $storage_result = [];
-    $store_result = '';
-    $db_connection_settings = $app->getContainer()->get('doctrine_db_settings');
-    $doctrine_queries = $app->getContainer()->get('m2mDoctrineSqlQueries');
-    $db_connection = DriverManager::getConnection($db_connection_settings);
-
-    $queryBuilder = $db_connection->createQueryBuilder();
-    $storage_result = $doctrine_queries::queryStoreUserData($queryBuilder, $cleaned_params);
-
-    return $storage_result;
-}
+//function storeRegDetails($app, $cleaned_params)
+//{
+//    $storage_result = [];
+//    $store_result = '';
+//    $db_connection_settings = $app->getContainer()->get('doctrine_db_settings');
+//    $doctrine_queries = $app->getContainer()->get('m2mDoctrineSqlQueries');
+//    $db_connection = DriverManager::getConnection($db_connection_settings);
+//
+//    $queryBuilder = $db_connection->createQueryBuilder();
+//    $storage_result = $doctrine_queries::queryStoreUserData($queryBuilder, $cleaned_params);
+//
+//    return $storage_result;
+//}

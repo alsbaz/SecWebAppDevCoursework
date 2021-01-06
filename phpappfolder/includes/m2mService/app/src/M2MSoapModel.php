@@ -2,6 +2,8 @@
 
 namespace M2mService;
 
+use PHPUnit\Util\Exception;
+
 class M2MSoapModel
 {
     private $method_to_use;
@@ -41,10 +43,12 @@ class M2MSoapModel
         $soap_function = $this->selectSoapCall();
 
         try {
-            if ($soap_client_handle !== false) {
-                $call_result = $soap_client_handle->__soapCall($soap_function, $this->params);
+            if (isset($_SESSION['username'])) {
+                if ($soap_client_handle !== false) {
+                    $call_result = $soap_client_handle->__soapCall($soap_function, $this->params);
+                }
+                $this->result = $call_result;
             }
-            $this->result = $call_result;
 
         } catch(\SoapFault $e) {
             switch ($e->getMessage()) {
@@ -61,8 +65,8 @@ class M2MSoapModel
                     break;
             }
 //            unset($_SESSION['message']);
-            header("Location: " . $_SERVER['HTTP_REFERER']);
-            exit();
+//            header("Location: " . $_SERVER['HTTP_REFERER']);
+//            exit();
 //var_dump($e->getMessage());
 //var_dump($e->getCode());
         }
@@ -83,7 +87,7 @@ class M2MSoapModel
                     'password' => $this->password, //'CGs74bktVKzAHxC',
                     'deviceMSISDN' => $this->device_MSISDN, //'+447817814149',
 //                    'message' => '&lt;unique_id&gt;skateFastEatAss&lt;/unique_id&gt;' . 'Hello World',//$this->message, //&lt;msg&gt;Bob &amp; Jane&lt;/msg&gt; --> <msg>Bob & Jane</msg>
-                    'message' => '<unique_id>skateFastEatAss</unique_id><username>' . $_SESSION['username'] . '</username><email>' . $_SESSION['email'] . '</email><message_content>' . $this->message . '</message_content>',
+                    'message' => '<id>20-3110-AD</id><username>' . $_SESSION['username'] . '</username><message_content>' . $this->message . '</message_content>',
                     'deliveryReport' => false, //$this->delivery_report,
                     'mtBearer' => "SMS",// $this->mt_bearer
                 ];
@@ -93,9 +97,9 @@ class M2MSoapModel
                 $soap_call_params = [
                     'username' => '20_17209674',
                     'password' => 'CGs74bktVKzAHxC',
-                    'deviceMSISDN' => '+447817814149',
+                    'deviceMSISDN' => '447817814149',
 //                    'message' => '&lt;unique_id&gt;skateFastEatAss&lt;/unique_id&gt;' . 'Hello World',//$this->message, //&lt;msg&gt;Bob &amp; Jane&lt;/msg&gt; --> <msg>Bob & Jane</msg>
-                    'message' => '<unique_id>skateFastEatAss</unique_id><username>' . $_SESSION['username'] . '</username><email>' . $_SESSION['email'] . '</email><message_content>' . bin2hex(random_bytes(5)) . '</message_content>',
+                    'message' => '<id>20-3110-AD</id><username>' . $_SESSION['username'] . '</username><message_content>' . bin2hex(random_bytes(5)) . '</message_content>',
                     'deliveryReport' => false, //$this->delivery_report,
                     'mtBearer' => "SMS",// $this->mt_bearer
                 ];
@@ -120,29 +124,29 @@ class M2MSoapModel
                     'countryCode' => null, //$this->country_code
                 ];
                 break;
-            case 'waitForMessage':
-                $soap_function = 'waitForMessage';
-                $soap_call_params = [
-                    'username' => $this->username,
-                    'password' => $this->password,
-                    'timeout' => $this->timeout,
-                    'deviceMSISDN' => $this->device_MSISDN,
-                    'msgref' => $this->msgref,
-                    'countryCode' => $this->country_code
-                ];
-                break;
-            case 'sendAndWait':
-                $soap_function = 'sendAndWait';
-                $soap_call_params = [
-                    'username' => $this->username,
-                    'password' => $this->password,
-                    'timeout' => $this->timeout,
-                    'deviceMSISDN' => $this->device_MSISDN,
-                    'message' => $this->message,
-                    'deliveryReport' => $this->delivery_report,
-                    'mtBearer' => $this->mt_bearer
-                ];
-                break;
+//            case 'waitForMessage':
+//                $soap_function = 'waitForMessage';
+//                $soap_call_params = [
+//                    'username' => $this->username,
+//                    'password' => $this->password,
+//                    'timeout' => $this->timeout,
+//                    'deviceMSISDN' => $this->device_MSISDN,
+//                    'msgref' => $this->msgref,
+//                    'countryCode' => $this->country_code
+//                ];
+//                break;
+//            case 'sendAndWait':
+//                $soap_function = 'sendAndWait';
+//                $soap_call_params = [
+//                    'username' => $this->username,
+//                    'password' => $this->password,
+//                    'timeout' => $this->timeout,
+//                    'deviceMSISDN' => $this->device_MSISDN,
+//                    'message' => $this->message,
+//                    'deliveryReport' => $this->delivery_report,
+//                    'mtBearer' => $this->mt_bearer
+//                ];
+//                break;
 //            case 'flushMessages': //Most likely these wont be needed by us
 //                                  //But they are still possible calls
 //                break;

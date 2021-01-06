@@ -28,12 +28,12 @@ class M2MInputValidator
         }
 
         /** Regex component breakdown:
-        (?=.*[a-z]) Must contain at least one lowercase character
-        (?=.*[A-Z]) Must contain at least one uppercase character
-        (?=.*\d) Must contain at least 1 digit
-        [A-Za-z\d!@#£$%^&:;<>,.?/~_+=|] Rest of the characters (accepts uppercase, lowercase, digits and some symbols
-        {8,20} Must be between 8 and 20 characters
-        **/
+         *(?=.*[a-z]) Must contain at least one lowercase character
+         *(?=.*[A-Z]) Must contain at least one uppercase character
+         *(?=.*\d) Must contain at least 1 digit
+         *[A-Za-z\d!@#£$%^&:;<>,.?/~_+=|] Rest of the characters (accepts uppercase, lowercase, digits and some symbols
+         *{8,20} Must be between 8 and 20 characters
+         */
 
         // old regex: ^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$
         // new regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#£$%^&:;<>,.?/~_+=|]{8,20}$
@@ -74,17 +74,45 @@ class M2MInputValidator
             return false;
         }
 
-        if (isset($tainted_params['email'])) {
-            // filters email to validate if input is a valid email address
-            $cleaned_params['email'] = filter_var($tainted_params['email'], FILTER_SANITIZE_EMAIL);
-            // If the email doesn't match the filter OR the clean email doesn't match the tainted email
-            if (!filter_var($cleaned_params['email'], FILTER_VALIDATE_EMAIL) ||
-                $cleaned_params['email'] != $tainted_params['email']) {
-                return false;
-            }
+        $result = $this->cleanEmail($tainted_params['email']);
+        if ($result != false) {
+            $cleaned_params['email'] = $result;
         } else {
             return false;
         }
+
         return $cleaned_params;
     }
+
+    public function cleanEmail($tainted_email)
+    {
+        if (isset($tainted_email)) {
+            // filters email to validate if input is a valid email address
+            $result = filter_var(($tainted_email), FILTER_SANITIZE_EMAIL);
+            // If the email doesn't match the filter OR the clean email doesn't match the tainted email
+            if (!filter_var($result, FILTER_VALIDATE_EMAIL) || $result != ($tainted_email)) return false;
+        } else {
+            return false;
+        }
+        return $result;
+    }
+
+    public function sanitiseInput($params)
+    {
+        $sanitised_params = [];
+        if (!empty($params))
+        {
+            foreach ($params as $key => $value) {
+                if ($key != 'password') {
+                    $sanitised_params[$key] = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                    $sanitised_params[$key] = preg_replace("(\"|\'|\;)", "", $value);
+                } else {
+                    $sanitised_params[$key] = $value;
+                }
+            }
+        } else return false;
+
+        return $sanitised_params;
+    }
+
 }

@@ -11,19 +11,19 @@
                 {% else %}
                     <br>
                 {% endif %}
-                <label for="username">Username:</label>
+                <label for="username">Username:</label><br>
                 <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size=30" maxlength="50">
                 <br><br>
-                <label for="password">Password:</label>
+                <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
-                <label for="msisdn">Device MSISDN:</label>
+                <label for="msisdn">Device MSISDN:</label><br>
                 <input id="msisdn" name="msisdn" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
 {#                <label for="deliveryButton">Delivery reports:</label>#}
 {#                <input id="deliveryButton" name="deliveryButton" type="radio" value="deliveryReports">#}
 {#                <br><br>#}
-                <label for="message">Message:</label>
+                <label for="message">Message:</label><div id="help">Maximum 65 characters</div>
                 <textarea rows="5" cols="50" id="message" name="message" type="text"></textarea>
                 <br><br>
 

@@ -3,7 +3,7 @@
 <header>
     <div id="banner-div">
         <h1>{{ page_heading_1 }}</h1>
-        <p class="cent">
+        <p>
             Page last updated on <script type="text/javascript">document.write(document.lastModified)</script>
             <br />
             Maintained by <a href="mailto:p17209674@my365.dmu.ac.uk">
@@ -12,8 +12,8 @@
         <hr class="deepline"/>
     </div>
 </header>
-<nav id="nav-bar">
-    <div class="content">
+<nav>
+    <div id="nav-bar">
         {% if(logout == true) %}
             <ul>
                 <li><a href="{{ landing_page }}">Login page</a></li>
@@ -25,10 +25,12 @@
                 <li><a href="{{ landing_page3 }}">View Messages</a></li>
                 <li><a href="{{ landing_page4 }}">Download Messages</a></li>
                 <li><a href="{{ landing_page6 }}">Read Downloaded</a></li>
+                {% if(rank != null) %}
+                    <li><a href="{{ landing_page7 }}">Admin settings</a></li>
+                {% endif %}
                 <li><a href="{{ landing_page5 }}">Log out</a></li>
             </ul>
         {% endif %}
     </div>
 </nav>
-<div id="clear-div"></div>
 {% endblock %}

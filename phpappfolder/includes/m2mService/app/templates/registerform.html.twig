@@ -10,21 +10,27 @@
                 {% else %}
                     <br>
                 {% endif %}
-                <label for="username">Username:</label>
+                <label for="username">Username:</label><br>
                 <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
-                <br><br>
-                <label for="password">Password:</label>
+                <br>
+                <div id="help">Only use letters and numbers please.<br>Minimum 5 characters.</div>
+                <br>
+                <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
-                <br><br>
-                <label for="password2">Verify password:</label>
+                <br>
+                <div id="help">At least one lower and upper case letter and number.
+                    <br>Can contain special characters.
+                    <br>Minimum 8, maximum 20 characters long.
+                </div>
+                <br>
+                <label for="password2">Verify password:</label><br>
                 <input id="password2" name="password2" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
-                <label for="email">Email address:</label>
+                <label for="email">Email address:</label><br>
                 <input id="email" name="email" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
-                <br><br>
-                <label for="email_alert_tick">Alert on new message?</label>
-                <input id="email_alert_tick" name="email_alert_tick" type="checkbox"/>
-                <br><br>
+                <br>
+                <div id="help">Must be a valid email format.</div>
+                <br>
 
                 <br>
                 <input type="submit" value="Register">

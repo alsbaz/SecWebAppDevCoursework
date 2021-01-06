@@ -11,3 +11,4 @@ require $routes_path . 'readmessagepage.php';
 require $routes_path . 'downloadmessagepage.php';
 require $routes_path . 'notImportantYet.php';
 require $routes_path . 'showdownloadedpage.php';
+require $routes_path . 'adminsettings.php';

@@ -14,7 +14,7 @@ class M2MMessageHandler
     {
         $messages_sorted = $this->sortUniqueId($messages);
 
-        $pattern = "~(\<sourcemsisdn\>|\<destinationmsisdn\>|\<receivedtime\>|\<bearer\>|\<unique_id\>|\<message_content\>|\<username\>|\<email\>)(.+?)(?=\<\/|$)~";
+        $pattern = "~(\<sourcemsisdn\>|\<receivedtime\>|\<bearer\>|\<message_content\>|\<username\>)(.+?)(?=\<\/|$)~";
         $subject = $messages_sorted;
         $counter = 0;
         $result_array = null;
@@ -36,7 +36,7 @@ class M2MMessageHandler
         $messages_sorted = [];
         $counter = 0;
         foreach ($messages_unsorted as $message) {
-            if(preg_match("~unique_id~", $message) == 1){
+            if(preg_match("~(\<id\>20\-3110\-AD)~", $message) == 1){
                 $messages_sorted[$counter] = $message;
                 $counter += 1;
             }

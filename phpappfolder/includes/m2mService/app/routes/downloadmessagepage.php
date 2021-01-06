@@ -13,6 +13,7 @@ $app->get(
             exit();
         }
 
+        $rank = true;
         $error = false;
 
         if(isset($_SESSION['error'])) {
@@ -36,7 +37,9 @@ $app->get(
                 'landing_page3' => 'readmessagepage',
                 'landing_page4' => 'downloadmessagepage',
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
-                'landing_page6' =>'showdownloadedpage',
+                'landing_page6' => 'showdownloadedpage',
+                'landing_page7' => 'adminsettings',
+                'rank' => $rank,
 
             ]);
     });

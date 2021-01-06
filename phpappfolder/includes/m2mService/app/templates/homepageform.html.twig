@@ -7,13 +7,18 @@
                 <legend>Login details</legend>
                 {% if(error != false) %}
                     <p class="error">{{ error }}</p>
+                {% elseif(message != false) %}
+                    <p class="message">{{ message }}</p>
                 {% else %}
                     <br>
                 {% endif %}
-                <label for="username">Username:</label>
+{#                {% if(message != false) %}#}
+{#                    <p class="message">{{ message }}</p>#}
+{#                {% endif %}#}
+                <label for="username">Username:</label><br>
                 <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
-                <label for="password">Password:</label>
+                <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
                 <br><br>
 {#                <h3>{{ page_heading_3 }}</h3>#}
@@ -22,7 +27,7 @@
             </fieldset>
         </form>
         <form action="{{ action2 }}">
-            <p class="reg"><label>Not registered yet?</label>
+            <p class="reg"><label>Not registered yet?</label><br>
             <input type="submit" value="Register here!">
         </form>
     </div>

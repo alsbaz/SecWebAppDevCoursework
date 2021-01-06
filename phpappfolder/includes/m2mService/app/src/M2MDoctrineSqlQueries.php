@@ -32,7 +32,7 @@ class M2MDoctrineSqlQueries
 
         $store_result['outcome'] = $queryBuilder->execute();
         $store_result['sql_query'] = $queryBuilder->getSQL();
-//var_dump($store_result);
+var_dump($store_result);
         return $store_result;
     }
 
@@ -50,43 +50,57 @@ class M2MDoctrineSqlQueries
         return $query->fetchAll();
     }
 
-    public static function queryStoreM2mMessages($queryBuilder, $params)
+    public static function queryStoreM2mMessages($queryBuilder, $params, $queryBuilder2)
     {
-        $store_result = [];
+        $result_stored = [];
+        $counter = 0;
 //var_dump($params);
         foreach ($params as $param) {
-            $queryBuilder = $queryBuilder->insert('m2m_messages')
-                ->values([
-                    'sourcemsisdn' => ':source',
-                    'destinationmsisdn' => ':destination',
-                    'receivedtime' => ':time',
-                    'bearer' => ':bearer',
-                    'username' => ':username',
-                    'email' => ':email',
-                    'message_content' => ':content',
-                ])
-                ->setParameters([
-                    ':source' => $param['sourcemsisdn'],
-                    ':destination' => $param['destinationmsisdn'],
-                    ':time' => $password = $param['receivedtime'],
-                    ':bearer' => $param['bearer'],
-                    ':username' => $param['username'],
-                    ':email' => $param['email'],
-                    ':content' => $param['message_content'],
-                ]);
+            $queryBuilder
+                ->select('message_content')
+                ->from('m2m_messages')
+                ->where('receivedtime = ' . $queryBuilder->createNamedParameter($param['receivedtime']) .
+                ' AND message_content = ' . $queryBuilder->createNamedParameter($param['message_content']));
 
-            $store_result['outcome'] = $queryBuilder->execute();
-            $store_result['sql_query'] = $queryBuilder->getSQL();
+            $query = $queryBuilder->execute();
+            $result = $query->fetchAll();
+            if($result == null) {
+                $result_stored[$counter]['sourcemsisdn'] = $param['sourcemsisdn'];
+                $result_stored[$counter]['receivedtime'] = $param['receivedtime'];
+                $result_stored[$counter]['bearer'] = $param['bearer'];
+                $result_stored[$counter]['username'] = $param['username'];
+                $result_stored[$counter]['message_content'] = $param['message_content'];
+                $counter += 1;
+                $queryBuilder2 = $queryBuilder2->insert('m2m_messages')
+                    ->values([
+                        'sourcemsisdn' => ':source',
+    //                    'destinationmsisdn' => ':destination',
+                        'receivedtime' => ':time',
+                        'bearer' => ':bearer',
+                        'username' => ':username',
+//                        'email' => ':email',
+                        'message_content' => ':content',
+                    ])
+                    ->setParameters([
+                        ':source' => $param['sourcemsisdn'],
+    //                    ':destination' => $param['destinationmsisdn'],
+                        ':time' => $param['receivedtime'],
+                        ':bearer' => $param['bearer'],
+                        ':username' => $param['username'],
+//                        ':email' => $param['email'],
+                        ':content' => $param['message_content'],
+                    ]);
+
+                $store_result['outcome'] = $queryBuilder2->execute();
+                $store_result['sql_query'] = $queryBuilder2->getSQL();
+            }
         }
 //var_dump($store_result);
-        return $store_result;
+        return $result_stored;
     }
 
     public static function  queryRetrieveM2mMessages($queryBuilder, array $cleaned_param)
     {
-        $retrieve_result = [];
-
-
         $queryBuilder
             ->select('*')
             ->from('m2m_messages');
@@ -113,6 +127,33 @@ class M2MDoctrineSqlQueries
 //        $store_result['outcome'] = $queryBuilder->execute();
 //        $store_result['sql_query'] = $queryBuilder->getSQL();
 //var_dump($store_result);
+
+        return $query->fetchAll();
+    }
+
+    public static function queryUpdateM2mSwitch($queryBuilder, $array)
+    {
+        $queryBuilder = $queryBuilder->update('m2m_switch');
+        foreach ($array as $key =>$value) {
+            $queryBuilder->set($key, $queryBuilder->createNamedParameter($value));
+        }
+        $queryBuilder->where('switchboard_name = ' . $queryBuilder->createNamedParameter('main'));
+
+        $store_result['outcome'] = $queryBuilder->execute();
+        $store_result['sql_query'] = $queryBuilder->getSQL();
+        return $store_result;
+    }
+
+    public static function queryRetrieveM2mMessagesLimit($queryBuilder, $limit)
+    {
+        $queryBuilder
+            ->select('*')
+            ->from('m2m_messages')
+            ->orderBy('receivedtime', 'DESC')
+            ->setMaxResults($limit);
+
+        $query = $queryBuilder->execute();
+//var_dump($query);
 
         return $query->fetchAll();
     }
