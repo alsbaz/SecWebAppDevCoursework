@@ -32,7 +32,7 @@ class M2MDoctrineSqlQueries
 
         $store_result['outcome'] = $queryBuilder->execute();
         $store_result['sql_query'] = $queryBuilder->getSQL();
-var_dump($store_result);
+        var_dump($store_result);
         return $store_result;
     }
 
@@ -60,7 +60,7 @@ var_dump($store_result);
                 ->select('message_content')
                 ->from('m2m_messages')
                 ->where('receivedtime = ' . $queryBuilder->createNamedParameter($param['receivedtime']) .
-                ' AND message_content = ' . $queryBuilder->createNamedParameter($param['message_content']));
+                    ' AND message_content = ' . $queryBuilder->createNamedParameter($param['message_content']));
 
             $query = $queryBuilder->execute();
             $result = $query->fetchAll();
@@ -74,7 +74,7 @@ var_dump($store_result);
                 $queryBuilder2 = $queryBuilder2->insert('m2m_messages')
                     ->values([
                         'sourcemsisdn' => ':source',
-    //                    'destinationmsisdn' => ':destination',
+                        //                    'destinationmsisdn' => ':destination',
                         'receivedtime' => ':time',
                         'bearer' => ':bearer',
                         'username' => ':username',
@@ -83,7 +83,7 @@ var_dump($store_result);
                     ])
                     ->setParameters([
                         ':source' => $param['sourcemsisdn'],
-    //                    ':destination' => $param['destinationmsisdn'],
+                        //                    ':destination' => $param['destinationmsisdn'],
                         ':time' => $param['receivedtime'],
                         ':bearer' => $param['bearer'],
                         ':username' => $param['username'],

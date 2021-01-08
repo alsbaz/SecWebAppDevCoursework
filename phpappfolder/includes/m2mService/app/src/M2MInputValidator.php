@@ -106,6 +106,7 @@ class M2MInputValidator
                 if ($key != 'password') {
                     $sanitised_params[$key] = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                     $sanitised_params[$key] = preg_replace("(\"|\'|\;)", "", $value);
+                    $sanitised_params[$key] = preg_replace('/\s+/', ",", $value);
                 } else {
                     $sanitised_params[$key] = $value;
                 }

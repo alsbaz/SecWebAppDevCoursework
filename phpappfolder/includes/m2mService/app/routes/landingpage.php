@@ -47,7 +47,7 @@ $app->any(
                 case 'SendComp':
                     if($tainted_params == null) break;
                     $method = 'sendMessage';
-
+//var_dump($tainted_params);
                     if ($tainted_params['message'] == '') {
                         throw new Exception("Please enter a message to send", 3);
                     } elseif (strlen($tainted_params['message']) > 65) {
@@ -56,8 +56,8 @@ $app->any(
 
                     $sanitiser = $this->m2mInputValidator;
                     $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
-
-                    $result = doSoapFunction($app, $tainted_params, $method);
+//var_dump($cleaned_params);
+                    $result = doSoapFunction($app, $cleaned_params, $method);
                     if($result == true) $message = 'Message sent successfully.';
                     break;
                 case 'SendCompAuto':
@@ -143,7 +143,7 @@ $app->any(
             } else {
                 $message = 'Switchboard should appear now!';
             }
-
+            
             $switchboard_result_unhandled = getSwithboardState($app);
 
             $switchboard_result = [
@@ -158,8 +158,7 @@ $app->any(
             ];
 var_dump($switchboard_result);
 
-
-            $limit = 10;
+            $limit = 20;
             $feed_message = 'Most recent ' . $limit . ' messages from the database:';
             $result_array1 = queryRetrieveM2mMessagesLimit($app, $limit);
             #
@@ -211,6 +210,7 @@ var_dump($switchboard_result);
                 'landing_page6' =>'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
                 'rank' => $rank,
+                'trigger' => true,
 
         ]);
     });
@@ -224,6 +224,7 @@ function doSoapFunction($app, $params, $method)
     if(isset($params['msisdn'])) $soapModel->device_MSISDN = $params['msisdn'];
     if(isset($params['count'])) $soapModel->count = $params['count'];
     if(isset($params['message'])) $soapModel->message = $params['message'];
+    if(isset($params['mtBearer'])) $soapModel->mt_bearer = $params['mtBearer'];
     $test = $soapModel->performSoapCall();
 
     return $soapModel->result;
@@ -253,8 +254,6 @@ function getM2mMessages($app, array $params)
 
     return $matching_db_entries;
 }
-
-
 
 function queryUpdateM2mSwitch($app, $params)
 {
