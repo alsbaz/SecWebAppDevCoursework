@@ -32,7 +32,7 @@ class M2MDoctrineSqlQueries
 
         $store_result['outcome'] = $queryBuilder->execute();
         $store_result['sql_query'] = $queryBuilder->getSQL();
-        var_dump($store_result);
+//var_dump($store_result);
         return $store_result;
     }
 
@@ -41,7 +41,7 @@ class M2MDoctrineSqlQueries
         $retrieve_result = [];
 
         $queryBuilder
-            ->select('m2m_pass_hash', 'm2m_id', 'm2m_email')
+            ->select('m2m_pass_hash', 'm2m_id', 'm2m_email', 'm2m_admin')
             ->from('m2m_users')
             ->where('m2m_username = ' . $queryBuilder->createNamedParameter($cleaned_param));
 

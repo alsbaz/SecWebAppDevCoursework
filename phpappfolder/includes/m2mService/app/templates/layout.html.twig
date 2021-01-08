@@ -4,6 +4,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="{{ css_path }}" type="text/css"/>
     <title>{% block title %}{{ page_title }}{% endblock %}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("button").click(function(){
+                $("#divSwitchboard").load(" #divSwitchboard");
+            });
+        });
+        // $(document).ready(function(){
+        //     $("button").click(function(){
+        //         $("#landing_table2").hide();
+        //     });
+        // });
+    </script>
+    <script>
+
+    </script>
 </head>
 <body>
 {% block banner %}{% endblock %}

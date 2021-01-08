@@ -39,7 +39,7 @@ $app->get(
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
                 'landing_page6' => 'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
-                'rank' => $rank,
+                'rank' => $_SESSION['rank'],
 
             ]);
     });

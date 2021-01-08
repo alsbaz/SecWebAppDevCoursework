@@ -98,14 +98,14 @@ td {
 }
 
 #landing_table {
-    float: left;
+    /*float: left;*/
     max-Height: 40vh;
     overflow: auto;
 }
 
 #landing_table2 {
-    height: 40vh;
-    overflow: auto;
+    clear: both;
+    /*float: none;*/
 }
 
 #switchboard {
@@ -154,7 +154,10 @@ td {
 
 .error {color:red}
 .message {color:green}
-
+/*.switchTable:nth-child(odd){*/
+/*    background-color: blue;*/
+/*    opacity: 0.7;*/
+/*}*/
 /*.test {text-indent:5em;}*/
 
 

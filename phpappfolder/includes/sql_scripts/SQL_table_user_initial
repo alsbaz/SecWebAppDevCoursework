@@ -11,6 +11,7 @@ CREATE TABLE m2m_users (
     `m2m_pass_hash` varchar (100) COLLATE utf8_unicode_ci NOT NULL,
     `m2m_email` varchar (100) COLLATE utf8_unicode_ci NOT NULL UNIQUE,
     `m2m_timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    `m2m_admin` boolean NOT NULL DEFAULT false,
     PRIMARY KEY (`m2m_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='CURRENT_TIMESTAMP';
 
@@ -27,11 +28,11 @@ CREATE TABLE m2m_messages (
 DROP TABLE IF EXISTS m2m_switch;
 CREATE TABLE m2m_switch (
     `switch_timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-    `switch1` tinyint NOT NULL,
-    `switch2` tinyint NOT NULL,
-    `switch3` tinyint NOT NULL,
-    `switch4` tinyint NOT NULL,
-    `fan` tinyint NOT NULL,
+    `switch1` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
+    `switch2` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
+    `switch3` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
+    `switch4` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
+    `fan` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
     `heaterTemp` tinyint NOT NULL,
     `lastDigit` tinyint NOT NULL,
     `switchboard_name` varchar (20) COLLATE utf8_unicode_ci NOT NULL,
@@ -45,3 +46,4 @@ DROP USER m2m_user@localhost;
 SHOW GRANTS FOR m2m_user@localhost;
 
 SELECT * FROM m2m_messages WHERE Null && username = 'bobBob67';
+UPDATE m2m_users SET m2m_admin = true WHERE m2m_username = 'bobBob67';

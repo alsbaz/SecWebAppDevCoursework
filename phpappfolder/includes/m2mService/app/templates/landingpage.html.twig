@@ -31,7 +31,7 @@
             </table>
         </fieldset>
         {% if(message_array == true) %}
-            <fieldset>
+            <fieldset id="landing_table">
                 <legend>Results:</legend>
                 <table id="tableLanding">
                     <thead>
@@ -52,18 +52,26 @@
                     </tbody>
                 </table>
             </fieldset>
+            <br>
         {% endif %}
-        <fieldset>
-            <legend>Switchboard:</legend>
-            <table id="tableSwitchboard">
-                {% for key, value in switchboard_result %}
-                    <tr>
-                        <th>{{ key }}</th>
-                        <td>{{ value }}</td>
-                    </tr>
+        <fieldset id="landing_table2">
+            <div id="divSwitchboard">
+                <legend>Switchboard:</legend>
+                <table id="tableSwitchboard">
+                    {% for key, value in switchboard_result %}
+                        <tr class="switchTable">
+                            <th>{{ key }}</th>
+                            {% if(key == "Temperature: ") %}
+                                <td>{{ value }} &#8451;</td>
+                            {% else %}
+                                <td>{{ value }}</td>
+                            {% endif %}
+                        </tr>
 
-                {% endfor %}
-            </table>
+                    {% endfor %}
+                </table>
+            </div>
+            <button>Refresh switchboard</button>
         </fieldset>
 
     </div>
