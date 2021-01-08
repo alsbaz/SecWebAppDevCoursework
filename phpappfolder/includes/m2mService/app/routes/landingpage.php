@@ -144,6 +144,21 @@ $app->any(
                 $message = 'Switchboard should appear now!';
             }
 
+            $switchboard_result_unhandled = getSwithboardState($app);
+
+            $switchboard_result = [
+                'Last Updated: ' => $switchboard_result_unhandled[0]['switch_timestamp'],
+                'Switch 1: ' => $switchboard_result_unhandled[0]['switch1'],
+                'Switch 2: ' => $switchboard_result_unhandled[0]['switch2'],
+                'Switch 3: ' => $switchboard_result_unhandled[0]['switch3'],
+                'Switch 4: ' => $switchboard_result_unhandled[0]['switch4'],
+                'Fan Direction: ' => $switchboard_result_unhandled[0]['fan'],
+                'Temperature: ' => $switchboard_result_unhandled[0]['heaterTemp'],
+                'Keypad Last Digit: ' => $switchboard_result_unhandled[0]['lastDigit']
+            ];
+var_dump($switchboard_result);
+
+
             $limit = 10;
             $feed_message = 'Most recent ' . $limit . ' messages from the database:';
             $result_array1 = queryRetrieveM2mMessagesLimit($app, $limit);
@@ -187,6 +202,7 @@ $app->any(
                 'feed_message' => $feed_message,
                 'message_array' => $result_array,
                 'message_array_feed' => $result_array1,
+                'switchboard_result' => $switchboard_result,
                 'landing_page' => 'landingpage',
                 'landing_page2' => 'sendmessagepage',
                 'landing_page3' => 'readmessagepage',
@@ -238,12 +254,22 @@ function getM2mMessages($app, array $params)
     return $matching_db_entries;
 }
 
+
+
 function queryUpdateM2mSwitch($app, $params)
 {
     $db_handlers = dbSetupConnection($app);
     $storage_result = $db_handlers['doctrine_queries']::queryUpdateM2mSwitch($db_handlers['query_builder'], $params);
 
     return $storage_result;
+}
+
+function getSwithboardState($app)
+{
+    $db_handlers = dbSetupConnection($app);
+    $queryResult = $db_handlers['doctrine_queries']::getSwitchboardState($db_handlers['query_builder']);
+
+    return $queryResult;
 }
 
 function queryRetrieveM2mMessagesLimit($app, $limit)

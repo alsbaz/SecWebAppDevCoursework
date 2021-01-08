@@ -53,6 +53,18 @@
                 </table>
             </fieldset>
         {% endif %}
+        <fieldset>
+            <legend>Switchboard:</legend>
+            <table id="tableSwitchboard">
+                {% for key, value in switchboard_result %}
+                    <tr>
+                        <th>{{ key }}</th>
+                        <td>{{ value }}</td>
+                    </tr>
+
+                {% endfor %}
+            </table>
+        </fieldset>
 
     </div>
 {% endblock %}
