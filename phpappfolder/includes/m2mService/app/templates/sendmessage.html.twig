@@ -1,0 +1,42 @@
+{% extends 'banner.html.twig' %}
+{% block content %}
+    <div class="page_content" id="page-content-div">
+        <h3>{{ page_heading_2 }}</h3>
+        <form action="{{ action_send }}" method="post">
+{#            <fieldset class="messageform">#}
+            <fieldset>
+                <legend>Send Message</legend>
+                {% if(error != false) %}
+                    <p class="error">{{ error }}</p>
+                {% else %}
+                    <br>
+                {% endif %}
+                <label for="username">Username:</label><br>
+                <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size=30" maxlength="50">
+                <br><br>
+                <label for="password">Password:</label><br>
+                <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="msisdn">Device MSISDN:</label><br>
+                <input id="msisdn" name="msisdn" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+{#                <label for="mtBearer">Bearer: </label>#}
+{#                <select name="mtBearer" id="mtBearer">#}
+{#                    <option value="SMS">SMS</option>#}
+{#                    <option value="GPRS">GPRS</option>#}
+{#                    <option value="GPRSUrgent">GPRS Urgent</option>#}
+{#                </select>#}
+{#                <br><br>#}
+                <label for="message">Message:</label><div id="help">Maximum 65 characters</div>
+                <textarea rows="5" cols="50" id="message" name="message" type="text"></textarea>
+                <br><br>
+
+                <br>
+                <input type="submit" value="Send">
+            </fieldset>
+        </form>
+
+
+
+    </div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'banner.html.twig' %}
+{% block content %}
+{#    enable the meta header to refresh page every 10 seconds   #}
+{#    <meta http-equiv="refresh" content="1" >#}
+    <div id="page-content-div">
+        <h3>{{ page_heading_2 }}</h3>
+        {% if(message != false) %}
+{#            <fieldset>#}
+                <p>{{ message }}</p>
+{#            </fieldset>#}
+        {% endif %}
+        <fieldset id="landing_table">
+            <legend>{{ feed_message }}</legend>
+            <table id="tableLanding">
+                <thead>
+                <tr>
+                    {% for header in message_array_feed.0|keys %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for nested_array in message_array_feed %}
+                    <tr>
+                        {% for value in nested_array %}
+                            <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </fieldset>
+        {% if(message_array == true) %}
+            <fieldset id="landing_table">
+                <legend>Results:</legend>
+                <table id="tableLanding">
+                    <thead>
+                        <tr>
+                            {% for header in message_array.0|keys %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nested_array in message_array %}
+                        <tr>
+                            {% for value in nested_array %}
+                            <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </fieldset>
+            <br>
+        {% endif %}
+        <fieldset id="landing_table2">
+            <div id="divSwitchboard">
+                <legend>Switchboard:</legend>
+                <table id="tableSwitchboard">
+                    {% for key, value in switchboard_result %}
+                        <tr class="switchTable">
+                            <th>{{ key }}</th>
+                            {% if(key == "Temperature: ") %}
+                                <td>{{ value }} &#8451;</td>
+                            {% else %}
+                                <td>{{ value }}</td>
+                            {% endif %}
+                        </tr>
+
+                    {% endfor %}
+                </table>
+            </div>
+            <button>Refresh switchboard</button>
+        </fieldset>
+
+    </div>
+{% endblock %}

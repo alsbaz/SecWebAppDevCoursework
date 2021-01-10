@@ -1,0 +1,38 @@
+{% extends 'banner.html.twig' %}
+{% block content %}
+    <div class="page_content" id="page-content-div">
+        <h3>{{ page_heading_2 }}</h3>
+        <form action="{{ action_read }}" method="post">
+{#            <fieldset class="messageform">#}
+            <fieldset>
+                <legend>Read Message</legend>
+                {% if(error != false) %}
+                    <div class="error">{{ error }}</div>
+                {% else %}
+                    <br>
+                {% endif %}
+                <label for="username">Username:</label><br>
+                <input id="username" name="username" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="password">Password:</label><br>
+                <input id="password" name="password" type="password" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                <label for="msisdn">Device MSISDN:</label><br>
+                <input id="msisdn" name="msisdn" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+                {#                <label for="deliveryButton">Delivery reports:</label>#}
+                {#                <input id="deliveryButton" name="deliveryButton" type="radio" value="deliveryReports">#}
+                {#                <br><br>#}
+                <label for="count">Number of Messages:</label><br>
+                <input id="count" name="count" type="text" value="{{ initial_input_box_value }}" size="30" maxlength="50">
+                <br><br>
+
+                <br>
+                <input type="submit" value="Read">
+            </fieldset>
+        </form>
+
+
+
+    </div>
+{% endblock %}

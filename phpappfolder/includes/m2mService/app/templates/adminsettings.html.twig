@@ -1,0 +1,79 @@
+{% extends 'banner.html.twig' %}
+{% block content %}
+    <div id="page-content-div">
+        <h3>{{ page_heading_2 }}</h3>
+        <form action="{{ action }}" method="post">
+            <fieldset>
+                <legend>Options</legend>
+                {% if(error != false) %}
+                    <p class="error">{{ error }}</p>
+                {% else %}
+                    <br>
+                {% endif %}
+                <div id="switches">
+                    <label for="switch1">Switch 1:</label><br>
+                    <div id="switch1">
+                        <input id="switch1on" name="switch1" type="radio" value="On" checked>
+                        <label for="switch1on">On</label>
+                        <input id="switch1off" name="switch1" type="radio" value="Off">
+                        <label for="switch1off">Off</label>
+                        <br>
+                    </div>
+                    <label for="switch2">Switch 2:</label><br>
+                    <div id="switch2">
+                        <input id="switch2on" name="switch2" type="radio" value="On" checked>
+                        <label for="switch2on">On</label>
+                        <input id="switch2off" name="switch2" type="radio" value="Off">
+                        <label for="switch2off">Off</label>
+                        <br><br>
+                    </div>
+                    <label for="switch3">Switch 3:</label><br>
+                    <div id="switch3">
+                        <input id="switch3on" name="switch3" type="radio" value="On" checked>
+                        <label for="switch3on">On</label>
+                        <input id="switch3off" name="switch3" type="radio" value="Off">
+                        <label for="switch3off">Off</label>
+                        <br>
+                    </div>
+                    <label for="switch4">Switch 4:</label><br>
+                    <div id="switch4">
+                        <input id="switch4on" name="switch4" type="radio" value="On" checked>
+                        <label for="switch4on">On</label>
+                        <input id="switch4off" name="switch4" type="radio" value="Off">
+                        <label for="switch4off">Off</label>
+                        <br>
+                    </div>
+                </div>
+                <div id="fanState">
+                    <label for="fan">Fan state:</label><br>
+                    <input id="fan1" name="fan" type="radio" value="Forward" checked>
+                    <label for="fan1">Forward</label><br>
+                    <input id="fan2" name="fan" type="radio" value="Reverse">
+                    <label for="fan2">Reverse</label>
+                    <br><br>
+                </div>
+                <div id="heaterTemp">
+                    <label for="temp">Temperature of heater in Celsius:</label>
+                    <div id="help">Between 0 and 100 Celsius.</div>
+                    <input id="temp" name="heaterTemp" type="number" min="0" max="100">
+                    <br><br>
+                </div>
+                <div id="lastDigit">
+                    <label for="lastDig">Last digit entered:</label>
+                    <div id="help">Between 0 and 9.</div>
+                    <input id="lastDig" name="lastDigit" type="number" min="0" max="9">
+                </div>
+                <br>
+                <input type="submit" value="Send">
+            </fieldset>
+        </form>
+
+    </div>
+{% endblock %}
+
+
+{#1.	Four switches (on/off)
+2.	Fan (forward/reverse)
+3.	Heater (temperature)
+4.	Keypad (last number entered)
+#}
