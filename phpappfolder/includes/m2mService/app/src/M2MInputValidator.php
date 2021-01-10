@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Handles all the verification and sanitisation of the user inputs.
+ */
 namespace M2mService;
 
 class M2MInputValidator
@@ -8,6 +11,11 @@ class M2MInputValidator
 
     public function __destruct() {}
 
+    /**
+     * @param array $tainted_params
+     * @return array|false
+     * This method is specific for the login inputs.
+     */
     public function cleanParams1(array $tainted_params)
     {
         $cleaned_params = [];
@@ -35,9 +43,6 @@ class M2MInputValidator
          *{8,20} Must be between 8 and 20 characters
          */
 
-        // old regex: ^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$
-        // new regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#£$%^&:;<>,.?/~_+=|]{8,20}$
-
         // if unsanitised password meets regex criteria
         if (preg_match("[^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#£$%^&:;<>,.?/~_+=|]{8,20}$]", $tainted_params['password'])) {
             // set cleaned password as tested and passed password
@@ -50,12 +55,17 @@ class M2MInputValidator
         return $cleaned_params;
     }
 
+    /**
+     * @param array $tainted_params
+     * @return array|false
+     * Extention of the cleanParams1 method. It is exclusively
+     * used for the registration inputs.
+     */
     public function cleanParams2(array $tainted_params)
     {
         $tainted_user_pass['username'] = $tainted_params['username'];
         $tainted_user_pass['password'] = $tainted_params['password'];
-        $cleaned_params = [];
-
+        // pass the username and password to the above method for checking and cleaning
         $cleaned_params = $this->cleanParams1($tainted_user_pass);
         if ($cleaned_params == false) {
             return false;
@@ -84,6 +94,11 @@ class M2MInputValidator
         return $cleaned_params;
     }
 
+    /**
+     * @param string $tainted_email
+     * @return false|mixed
+     * Specific method to check emails.
+     */
     public function cleanEmail($tainted_email)
     {
         if (isset($tainted_email)) {
@@ -97,16 +112,25 @@ class M2MInputValidator
         return $result;
     }
 
+    /**
+     * @param array $params
+     * @return array|false
+     * All general input is sanitised here.
+     */
     public function sanitiseInput($params)
     {
         $sanitised_params = [];
         if (!empty($params))
         {
             foreach ($params as $key => $value) {
+                // password is not used anywhere except for hashing, so it is not touched
                 if ($key != 'password') {
+                    // removes all the XML flags
                     $sanitised_params[$key] = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+                    // using regex for removing code breaking characters such as " or ;
                     $sanitised_params[$key] = preg_replace("(\"|\'|\;)", "", $value);
-                    $sanitised_params[$key] = preg_replace('/\s+/', ",", $value);
+                    // replacing newline characters with space
+                    $sanitised_params[$key] = preg_replace('/\s+/', " ", $value);
                 } else {
                     $sanitised_params[$key] = $value;
                 }
@@ -115,5 +139,4 @@ class M2MInputValidator
 
         return $sanitised_params;
     }
-
 }

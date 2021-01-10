@@ -6,6 +6,11 @@ namespace M2mService;
 
 class M2MBcryptWrapper
 {
+    /**
+     * @param string $plain_pass
+     * @return false|string|null
+     * Hashes the passed password and returns the hash.
+     */
     public function hashPassword($plain_pass)
     {
         if(!empty($plain_pass)){
@@ -16,6 +21,15 @@ class M2MBcryptWrapper
         return $hashed_pass;
     }
 
+    /**
+     * @param string $string_to_check
+     * @param string $hashed_pass
+     * @return bool
+     * When the user tries to log in, the password and the hash stored in
+     * the database is passed to this method.
+     * password_verify does a verification and returns true if it was a match.
+     *
+     */
     public function authenticateHash($string_to_check, $hashed_pass)
     {
         $authentication = false;
@@ -26,19 +40,4 @@ class M2MBcryptWrapper
         }
         return $authentication;
     }
-//    public function authenticatePassword($string_to_check, $stored_user_password_hash)
-//    {
-//        $user_authenticated = false;
-//        $current_user_password = $string_to_check;
-//        $stored_user_password_hash = $stored_user_password_hash;
-//        if (!empty($current_user_password) && !empty($stored_user_password_hash))
-//        {
-//            if (password_verify($current_user_password, $stored_user_password_hash))
-//            {
-//                $user_authenticated = true;
-//            }
-//        }
-//        return $user_authenticated;
-//    }
-
 }
