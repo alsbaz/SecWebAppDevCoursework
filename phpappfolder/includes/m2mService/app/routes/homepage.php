@@ -59,7 +59,7 @@ $app->any('/', function(Request $request, Response $response) use ($app)
                 $errorMessage = 'Error with password hashing';
                 if ($cleaned_params['password'] == false) throw new Exception($errorMessage, 1);
                 $logger = $this->loggerWrapper;
-                $logger->logAction($errorMessage, $_SESSION['unique_id'], 'ERROR');
+                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
                 unset($errorMessage);
             } else {
                 $errorMessage = 'Error while cleaning';
@@ -97,7 +97,7 @@ $app->any('/', function(Request $request, Response $response) use ($app)
                 $_SESSION['error'] = "This username or email is already registered" . $e->getMessage();
 
                 $logger = $this->loggerWrapper;
-                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+                $logger->logAction($_SESSION['error'], $_SERVER['REMOTE_ADDR'], 'ERROR');
 
                 header("Location: /register");
                 exit();
@@ -106,7 +106,7 @@ $app->any('/', function(Request $request, Response $response) use ($app)
                 $_SESSION['error'] = $e->getMessage();
 
                 $logger = $this->loggerWrapper;
-                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+                $logger->logAction($_SESSION['error'], $_SERVER['REMOTE_ADDR'], 'ERROR');
 
                 header("Location: /register");
                 exit();
@@ -125,7 +125,7 @@ $app->any('/', function(Request $request, Response $response) use ($app)
 
     $_SESSION['message'] = 'Login';
     $logger = $this->loggerWrapper;
-    $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+    $logger->logAction($_SESSION['error'], $_SERVER['REMOTE_ADDR'], 'ERROR');
     return $this->view->render($response,
     'homepageform.html.twig',
     [
