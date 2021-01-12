@@ -10,6 +10,8 @@ $app->get(
         if(!isset($_SESSION['unique_id'])) {
             header("Location: /");
             $_SESSION['error'] = 'Please log in before accessing that';
+            $logger = $this->loggerWrapper;
+            $logger->logAction($_SESSION['error'], $_SESSION['unique_id'], 'ERROR');
             exit();
         }
 
@@ -18,11 +20,14 @@ $app->get(
 
         if(isset($_SESSION['error'])) {
             $error = $_SESSION['error'];
+            $logger = $this->loggerWrapper;
+            $logger->logAction($_SESSION['error'], $_SESSION['unique_id'], 'ERROR');
             unset($_SESSION['error']);
         }
 
         $_SESSION['message'] = 'ReadComp';
-
+        $logger = $this->loggerWrapper;
+        $logger->logAction($_SESSION['message'], $_SESSION['unique_id'], 'INFO');
         return $this->view->render($response,
             'readmessage.html.twig',
             [
@@ -39,7 +44,7 @@ $app->get(
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
                 'landing_page6' =>'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
-                'rank' => $_SESSION['rank'],
+                'rank' => $rank,
 
 
             ]);

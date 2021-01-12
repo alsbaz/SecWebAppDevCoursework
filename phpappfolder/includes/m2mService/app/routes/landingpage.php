@@ -16,13 +16,15 @@ $app->any(
         $tainted_params = $request->getParsedBody();
         $message = false;
         $result_array = false;
-        $rank = null;
+        $rank = true;
         try {
             if(isset($_SESSION['message'])) switch($_SESSION['message']) {
                 case 'Login':
                     $validator = $this->m2mInputValidator;
                     if($tainted_params == null) {
                         throw new Exception('Please log in before accessing that', 2);
+                        $logger = $this->loggerWrapper;
+                        $logger->logAction($_SESSION['message'], $_SESSION['unique_id'], 'INFO');
                     }
                     $cleaned_params = $validator->cleanParams1($tainted_params);
 
@@ -38,11 +40,6 @@ $app->any(
                         $_SESSION['unique_id'] = $result_hash_id[0]['m2m_id'];
                         $_SESSION['username'] = $cleaned_params['username'];
                         $_SESSION['email'] = $result_hash_id[0]['m2m_email'];
-                        if($result_hash_id[0]['m2m_admin'] == 1) {
-                            $_SESSION['rank'] = 'Admin';
-                        } else {
-                            $_SESSION['rank'] = 'User';
-                        }
                     } else {
                         throw new Exception("Wrong username or password - password authentication error", 2);
                     }
@@ -129,7 +126,6 @@ $app->any(
                     break;
                 case 'AdminSetting':
 //var_dump($tainted_params);
-                    if($tainted_params == null) break;
                     if($tainted_params['heaterTemp'] == '' || $tainted_params['lastDigit'] == ''){
                         throw new Exception("Please fill each field", 3);
                     } elseif(strlen($tainted_params['heaterTemp']) > 3 || strlen($tainted_params['lastDigit']) > 1) {
@@ -149,8 +145,7 @@ $app->any(
             } else {
                 $message = 'Switchboard should appear now!';
             }
-
-//            $rank = $_SESSION['rank'];
+            
             $switchboard_result_unhandled = getSwithboardState($app);
 
             $switchboard_result = [
@@ -163,6 +158,9 @@ $app->any(
                 'Temperature: ' => $switchboard_result_unhandled[0]['heaterTemp'],
                 'Keypad Last Digit: ' => $switchboard_result_unhandled[0]['lastDigit']
             ];
+
+
+
 //var_dump($switchboard_result);
 
             $limit = 20;
@@ -196,7 +194,9 @@ $app->any(
         }
 
 //var_dump($_SESSION);
-
+        $_SESSION['message'] = 'LandingPage';
+        $logger = $this->loggerWrapper;
+        $logger->logAction($_SESSION['message'], $_SESSION['unique_id'], 'INFO');
         return $this->view->render($response,
             'landingpage.html.twig',
             [
@@ -216,7 +216,7 @@ $app->any(
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
                 'landing_page6' =>'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
-                'rank' => $_SESSION['rank'],
+                'rank' => $rank,
                 'trigger' => true,
 
         ]);
