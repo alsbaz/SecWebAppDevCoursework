@@ -13,6 +13,12 @@ $app->any(
 //$time = ($time_end - $time_start) * 10;
 //var_dump($time);
 //        if(!isset($_SESSION['message'])) $_SESSION['message'] = 'SendCompAuto'; //If want to generate messages automatically
+        if(!isset($_SESSION['unique_id']) && $_SESSION['message'] != 'Login') {
+            header("Location: /");
+            $_SESSION['error'] = 'Please log in before accessing that';
+            exit();
+        }
+//var_dump($_SESSION);
         $tainted_params = $request->getParsedBody();
         $message = false;
         $result_array = false;
@@ -22,7 +28,7 @@ $app->any(
                 case 'Login':
                     $validator = $this->m2mInputValidator;
                     if($tainted_params == null) {
-                        throw new Exception('Please log in before accessing that', 2);
+                        throw new Exception('Please log in before accessing that test', 2);
                     }
                     $cleaned_params = $validator->cleanParams1($tainted_params);
 
@@ -37,7 +43,7 @@ $app->any(
                     if ($hasher->authenticateHash($cleaned_params['password'], $result_hash_id[0]['m2m_pass_hash'])) {
                         $_SESSION['unique_id'] = $result_hash_id[0]['m2m_id'];
                         $_SESSION['username'] = $cleaned_params['username'];
-                        $_SESSION['email'] = $result_hash_id[0]['m2m_email'];
+//                        $_SESSION['email'] = $result_hash_id[0]['m2m_email'];
                         if($result_hash_id[0]['m2m_admin'] == 1) {
                             $_SESSION['rank'] = 'Admin';
                         } else {
@@ -119,6 +125,7 @@ $app->any(
                         }
                     }
 
+
                     $sanitiser = $this->m2mInputValidator;
                     $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
 
@@ -147,7 +154,25 @@ $app->any(
                 default:
                     break;
             } else {
-                $message = 'Switchboard should appear now!';
+                $method = 'sendMessageAuto';
+                $result = doSoapFunction($app, $tainted_params, $method);
+
+
+                $method = 'peekMessages';
+
+                $params = [
+                    'username' => '20_17209674',
+                    'password' => 'CGs74bktVKzAHxC',
+                ];
+                $result_messages = doSoapFunction($app, $params, $method);
+                if ($result_messages != null) {
+                    $handler = $this->m2mMessageHandler;
+                    $split_array = $handler->splitMessageRegex($result_messages);
+
+                    if ($split_array != null) {
+                        storageM2mMessages($app, $split_array);
+                    }
+                }
             }
 
 //            $rank = $_SESSION['rank'];
@@ -165,7 +190,7 @@ $app->any(
             ];
 //var_dump($switchboard_result);
 
-            $limit = 20;
+            $limit = 15;
             $feed_message = 'Most recent ' . $limit . ' messages from the database:';
             $result_array1 = queryRetrieveM2mMessagesLimit($app, $limit);
             #
@@ -189,11 +214,11 @@ $app->any(
 //var_dump($_SESSION);
         unset($_SESSION['message']);
 
-        if(!isset($_SESSION['unique_id'])) {
-            header("Location: /");
-            $_SESSION['error'] = 'Please log in before accessing that';
-            exit();
-        }
+//        if(!isset($_SESSION['unique_id'])) {
+//            header("Location: /");
+//            $_SESSION['error'] = 'Please log in before accessing that';
+//            exit();
+//        }
 
 //var_dump($_SESSION);
 
@@ -228,12 +253,21 @@ function doSoapFunction($app, $params, $method)
     $soapModel->method_to_use = $method;
     if(isset($params['username'])) $soapModel->username = $params['username'];
     if(isset($params['password'])) $soapModel->password = $params['password'];
-    if(isset($params['msisdn'])) $soapModel->device_MSISDN = $params['msisdn'];
-    if(isset($params['count'])) $soapModel->count = $params['count'];
+    if(isset($params['msisdn'])) {
+        $soapModel->device_MSISDN = $params['msisdn'];
+    } else {
+        $soapModel->device_MSISDN = '';
+    }
+    if(isset($params['count'])) {
+        $soapModel->count = $params['count'];
+    } else {
+        $soapModel->count = '';
+    }
     if(isset($params['message'])) $soapModel->message = $params['message'];
     if(isset($params['mtBearer'])) $soapModel->mt_bearer = $params['mtBearer'];
     $test = $soapModel->performSoapCall();
-
+//var_dump($soapModel);
+//var_dump($test);
     return $soapModel->result;
 }
 

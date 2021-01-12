@@ -36,12 +36,14 @@ $app->any('/', function(Request $request, Response $response) use ($app)
     $errorMessage = null;
     $messageOutput = null;
     $message = null;
-
+//var_dump($_SESSION);
+//var_dump(session_id());
     if (isset($_SESSION['message'])) {
         $message = $_SESSION['message'];
         unset($_SESSION['message']);
     }
     if(isset($_SESSION['unique_id'])) unset($_SESSION['unique_id']);
+//    if(isset($_SESSION)) unset($_SESSION);
 
     $tainted_params = $request->getParsedBody();
     try {
