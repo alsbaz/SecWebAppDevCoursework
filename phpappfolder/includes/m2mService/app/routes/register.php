@@ -8,17 +8,24 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+
+
 $app->get('/register', function (Request $request, Response $response) use ($app)
 {
     $errorMessage = null;
     if(isset($_SESSION['error']))
     {
+        $logger = $this->loggerWrapper;
         $errorMessage = $_SESSION['error'];
+
+        $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+
         unset($_SESSION['error']);
     }
 
     $_SESSION['message'] = 'Register';
-
+    $logger = $this->loggerWrapper;
+    $logger->logAction($_SESSION['message'], $_SERVER['REMOTE_ADDR'], 'INFO');
     return $this->view->render($response,
         'registerform.html.twig',
         [

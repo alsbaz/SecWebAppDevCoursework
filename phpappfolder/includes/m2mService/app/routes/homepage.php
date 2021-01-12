@@ -56,34 +56,58 @@ $app->any('/', function(Request $request, Response $response) use ($app)
             if ($cleaned_params != false) {
                 $plain_password = $cleaned_params['password'];
                 $cleaned_params['password'] = $hasher->hashPassword($plain_password);
-                if ($cleaned_params['password'] == false) throw new Exception("Error with password hashing", 1);
+                $errorMessage = 'Error with password hashing';
+                if ($cleaned_params['password'] == false) throw new Exception($errorMessage, 1);
+                $logger = $this->loggerWrapper;
+                $logger->logAction($errorMessage, $_SESSION['unique_id'], 'ERROR');
+                unset($errorMessage);
             } else {
-                throw new Exception("Error while cleaning", 1);
+                $errorMessage = 'Error while cleaning';
+                throw new Exception($errorMessage, 1);
+                $logger = $this->loggerWrapper;
+                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+                unset($errorMessage);
             }
 
             if (!isset($_SESSION['unique_id'])) {
                 $cleaned_params['unique_id'] = bin2hex(random_bytes(10));
             } else {
                 unset($_SESSION['unique_id']);
-                throw new Exception("Unique ID pre set, please try again", 1);
+                $errorMessage = 'Unique ID pre set, please try again';
+                throw new Exception($errorMessage, 1);
+                $logger = $this->loggerWrapper;
+                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+                unset($errorMessage);
             }
 
             $storage_result = storeRegDetails($app, $cleaned_params);
             if ($storage_result['outcome'] == 1) {
                 $messageOutput = 'Successful registered, please log in to use our services';
             } else {
-                throw new Exception("Error with saving to database, please try again", 1);
+                $errorMessage = "Error with saving to database, please try again";
+                throw new Exception($errorMessage, 1);
+                $logger = $this->loggerWrapper;
+                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+                unset($errorMessage);
             }
         }
     } catch (Exception $e) {
         switch ($e->getCode()) {
             case 0:
                 $_SESSION['error'] = "This username or email is already registered" . $e->getMessage();
+
+                $logger = $this->loggerWrapper;
+                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+
                 header("Location: /register");
                 exit();
                 break;
             case 1:
                 $_SESSION['error'] = $e->getMessage();
+
+                $logger = $this->loggerWrapper;
+                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+
                 header("Location: /register");
                 exit();
             default:
@@ -94,10 +118,14 @@ $app->any('/', function(Request $request, Response $response) use ($app)
     if(isset($_SESSION['error']))
     {
         $errorMessage = $_SESSION['error'];
+        $logger = $this->loggerWrapper;
+        $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
         unset($_SESSION['error']);
     }
 
     $_SESSION['message'] = 'Login';
+    $logger = $this->loggerWrapper;
+    $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
     return $this->view->render($response,
     'homepageform.html.twig',
     [
