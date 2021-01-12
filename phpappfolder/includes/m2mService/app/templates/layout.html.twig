@@ -7,15 +7,27 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
-            $("button").click(function(){
-                $("#divSwitchboard").load(" #divSwitchboard");
+            $("#landing_refresh2").click(function(){
+                $("#div_switchboard").load(" #div_switchboard");
             });
         });
         // $(document).ready(function(){
-        //     $("button").click(function(){
-        //         $("#landing_table2").hide();
+        //     $("#landing_refresh1").click(function(){
+        //         // setInterval(function(){
+        //             $("#div_messages").load(" #div_messages");
+        //
+        //         // }, 3000);
         //     });
         // });
+
+        function timerFunction() {
+            setInterval(function () {
+                $(document).ready(function () {
+                    $("#div_messages").load(" #div_messages");
+                    // alert("Hello");
+                });
+            }, 3000);
+        }
     </script>
     <script>
 

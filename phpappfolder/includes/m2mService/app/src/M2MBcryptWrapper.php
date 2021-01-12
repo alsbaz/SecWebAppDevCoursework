@@ -28,7 +28,6 @@ class M2MBcryptWrapper
      * When the user tries to log in, the password and the hash stored in
      * the database is passed to this method.
      * password_verify does a verification and returns true if it was a match.
-     *
      */
     public function authenticateHash($string_to_check, $hashed_pass)
     {

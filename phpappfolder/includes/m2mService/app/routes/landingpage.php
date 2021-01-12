@@ -8,59 +8,60 @@ $app->any(
     '/landingpage',
     function(Request $request, Response $response) use ($app)
     {
+        $logger = $this->loggerWrapper;
 //$time_start = microtime(true);
 //$time_end = microtime(true);
 //$time = ($time_end - $time_start) * 10;
 //var_dump($time);
 //        if(!isset($_SESSION['message'])) $_SESSION['message'] = 'SendCompAuto'; //If want to generate messages automatically
-        if(!isset($_SESSION['unique_id']) && $_SESSION['message'] != 'Login') {
-            header("Location: /");
-            $_SESSION['error'] = 'Please log in before accessing that';
-            exit();
-        }
+//        if(!isset($_SESSION['unique_id']) && $_SESSION['message'] != 'Login') {
+//            header("Location: /");
+//            $_SESSION['error'] = 'Please log in before accessing that';
+//            exit();
+//        }
 //var_dump($_SESSION);
         $tainted_params = $request->getParsedBody();
+        if (isset($_SESSION['unique_id']) && $tainted_params != null) {
+            $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'] . $_SESSION['unique_id'], 'INPUT', 'Input values');
+        } elseif ($tainted_params != null) {
+            $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'], 'INPUT', 'Input values');
+        }
+
         $message = false;
         $result_array = false;
-        $rank = true;
+        $rank = null;
         try {
             if(isset($_SESSION['message'])) switch($_SESSION['message']) {
                 case 'Login':
                     $validator = $this->m2mInputValidator;
                     if($tainted_params == null) {
-<<<<<<< HEAD
-                        throw new Exception('Please log in before accessing that test', 2);
-=======
                         throw new Exception('Please log in before accessing that', 2);
-                        $logger = $this->loggerWrapper;
-                        $logger->logAction($_SESSION['message'], $_SESSION['unique_id'], 'INFO');
->>>>>>> 308cb6866fc51a6e5859bb151f4e20fd9b7e3899
                     }
                     $cleaned_params = $validator->cleanParams1($tainted_params);
 
                     if ($cleaned_params == false) {
-                        throw new Exception("Wrong username or password - failed cleaning", 2);
+                        $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'], 'WARNING', 'Validation failed, Input values');
+                        throw new Exception("Wrong username or password", 2);
                     }
                     $result_hash_id = getHashLogin($app, $cleaned_params['username']);
                     if (empty($result_hash_id)) {
-                        throw new Exception("Wrong username or password - database connection/hash retrieving error", 2);
+                        $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'], 'WARNING', 'User not found in db, Input values');
+                        throw new Exception("Wrong username or password", 2);
+
                     }
                     $hasher = $this->m2mBcryptWrapper;
                     if ($hasher->authenticateHash($cleaned_params['password'], $result_hash_id[0]['m2m_pass_hash'])) {
                         $_SESSION['unique_id'] = $result_hash_id[0]['m2m_id'];
                         $_SESSION['username'] = $cleaned_params['username'];
-<<<<<<< HEAD
 //                        $_SESSION['email'] = $result_hash_id[0]['m2m_email'];
                         if($result_hash_id[0]['m2m_admin'] == 1) {
                             $_SESSION['rank'] = 'Admin';
                         } else {
                             $_SESSION['rank'] = 'User';
                         }
-=======
-                        $_SESSION['email'] = $result_hash_id[0]['m2m_email'];
->>>>>>> 308cb6866fc51a6e5859bb151f4e20fd9b7e3899
                     } else {
-                        throw new Exception("Wrong username or password - password authentication error", 2);
+                        $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'], 'WARNING', 'Wrong password, Input values');
+                        throw new Exception("Wrong username or password", 2);
                     }
 
                     $message = 'Welcome to the M2M service interface ' . $cleaned_params['username'] . '!';
@@ -68,16 +69,16 @@ $app->any(
                 case 'SendComp':
                     if($tainted_params == null) break;
                     $method = 'sendMessage';
-//var_dump($tainted_params);
+
                     if ($tainted_params['message'] == '') {
-                        throw new Exception("Please enter a message to send", 3);
+                        throw new Exception("Message field cannot be empty", 3);
                     } elseif (strlen($tainted_params['message']) > 65) {
                         throw new Exception("Message too long", 3);
                     }
 
                     $sanitiser = $this->m2mInputValidator;
                     $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
-//var_dump($cleaned_params);
+
                     $result = doSoapFunction($app, $cleaned_params, $method);
                     if($result == true) $message = 'Message sent successfully.';
                     break;
@@ -94,7 +95,7 @@ $app->any(
                     $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
                     $result_messages = doSoapFunction($app, $cleaned_params, $method);
                     $handler = $this->m2mMessageHandler;
-//var_dump($result_messages);
+
                     $result_array = $handler->splitMessageRegex($result_messages);
                     if($result_array == null) $message = 'No messages have been received.';
                     break;
@@ -112,7 +113,7 @@ $app->any(
                     }
                     $handler = $this->m2mMessageHandler;
                     $split_array = $handler->splitMessageRegex($result_messages);
-//var_dump($split_array);
+
                     if($split_array != null) {
                         $result_array = storageM2mMessages($app, $split_array);
                         if ($result_array == true) {
@@ -145,7 +146,7 @@ $app->any(
                     if($result_array == null) $message = 'No matches were found.';
                     break;
                 case 'AdminSetting':
-//var_dump($tainted_params);
+                    if($tainted_params == null) break;
                     if($tainted_params['heaterTemp'] == '' || $tainted_params['lastDigit'] == ''){
                         throw new Exception("Please fill each field", 3);
                     } elseif(strlen($tainted_params['heaterTemp']) > 3 || strlen($tainted_params['lastDigit']) > 1) {
@@ -162,28 +163,32 @@ $app->any(
                     break;
                 default:
                     break;
-            } else {
-                $method = 'sendMessageAuto';
-                $result = doSoapFunction($app, $tainted_params, $method);
-
-
-                $method = 'peekMessages';
-
-                $params = [
-                    'username' => '20_17209674',
-                    'password' => 'CGs74bktVKzAHxC',
-                ];
-                $result_messages = doSoapFunction($app, $params, $method);
-                if ($result_messages != null) {
-                    $handler = $this->m2mMessageHandler;
-                    $split_array = $handler->splitMessageRegex($result_messages);
-
-                    if ($split_array != null) {
-                        storageM2mMessages($app, $split_array);
-                    }
-                }
             }
-            
+//            else {
+//                $method = 'sendMessageAuto';
+//                $result = doSoapFunction($app, $tainted_params, $method);
+//
+//
+//                $method = 'peekMessages';
+//
+//                $params = [
+//                    'username' => '20_17209674',
+//                    'password' => 'CGs74bktVKzAHxC',
+//                ];
+//                $result_messages = doSoapFunction($app, $params, $method);
+//                if ($result_messages != null) {
+//                    $handler = $this->m2mMessageHandler;
+//                    $split_array = $handler->splitMessageRegex($result_messages);
+//
+//                    if ($split_array != null) {
+//                        storageM2mMessages($app, $split_array);
+//                    }
+//                }
+//            }
+
+            $handler = $this->m2mBaseFunctions;
+            $error = $handler->baseFunctions($app);
+
             $switchboard_result_unhandled = getSwithboardState($app);
 
             $switchboard_result = [
@@ -197,14 +202,10 @@ $app->any(
                 'Keypad Last Digit: ' => $switchboard_result_unhandled[0]['lastDigit']
             ];
 
-
-
-//var_dump($switchboard_result);
-
             $limit = 15;
             $feed_message = 'Most recent ' . $limit . ' messages from the database:';
             $result_array1 = queryRetrieveM2mMessagesLimit($app, $limit);
-            #
+
         } catch (Exception $e) {
             switch ($e->getCode()) {
                 case 2:
@@ -217,24 +218,21 @@ $app->any(
                     break;
                 default:
                     header("Location: " . $_SERVER['HTTP_REFERER']);
-                    $_SESSION['error'] = "An unexpected error occurred, sorry for the inconvenience" . $e->getMessage();
+                    if (isset($_SESSION['unique_id'])) {
+                        $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'] . $_SESSION['unique_id'], 'WARNING', $e->getMessage() . 'Input values');
+                    } else {
+                        $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'], 'WARNING', $e->getMessage() . 'Input values');
+                    }
+                    $_SESSION['error'] = "An unexpected error occurred, sorry for the inconvenience";
             }
             unset($_SESSION['message']);
             exit();
         }
-//var_dump($_SESSION);
         unset($_SESSION['message']);
 
-//        if(!isset($_SESSION['unique_id'])) {
-//            header("Location: /");
-//            $_SESSION['error'] = 'Please log in before accessing that';
-//            exit();
-//        }
+        $handler = $this->m2mBaseFunctions;
+        $error = $handler->baseFunctions($app);
 
-//var_dump($_SESSION);
-        $_SESSION['message'] = 'LandingPage';
-        $logger = $this->loggerWrapper;
-        $logger->logAction($_SESSION['message'], $_SESSION['unique_id'], 'INFO');
         return $this->view->render($response,
             'landingpage.html.twig',
             [
@@ -242,6 +240,7 @@ $app->any(
                 'page_title' => 'M2M Services',
                 'page_heading_1' => 'M2M Services',
                 'page_heading_2' => 'M2M Services',
+                'error' => $error,
                 'message' => $message,
                 'feed_message' => $feed_message,
                 'message_array' => $result_array,
@@ -254,9 +253,8 @@ $app->any(
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
                 'landing_page6' =>'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
-                'rank' => $rank,
+                'rank' => $_SESSION['rank'],
                 'trigger' => true,
-
         ]);
     });
 

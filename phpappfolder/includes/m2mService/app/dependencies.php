@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Dependencies is called by each file in case they need an instance of an object.
+ * This file prepares them for use, and establishes dependencies.
+ */
+
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig(
         $container['settings']['view']['template_path'],
@@ -38,5 +43,15 @@ $container['m2mSoapModel'] = function () {
 
 $container['m2mMessageHandler'] = function () {
     $handler = new \M2mService\M2MMessageHandler();
+    return $handler;
+};
+
+$container['loggerWrapper'] = function () {
+    $logger = new \M2mService\LoggerWrapper();
+    return $logger;
+};
+
+$container['m2mBaseFunctions'] = function () {
+    $handler = new \M2mService\M2MBaseFunctions();
     return $handler;
 };

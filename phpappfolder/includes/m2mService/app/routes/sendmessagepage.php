@@ -1,36 +1,16 @@
 <?php
 
-
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 $app->get(
     '/sendmessagepage',
     function (Request $request, Response $response) use ($app) {
-        if(!isset($_SESSION['unique_id'])) {
-            header("Location: /");
-            $_SESSION['error'] = 'Please log in before accessing that';
-            $logger = $this->loggerWrapper;
-            $errorMessage = $_SESSION['error'];
+        $_SESSION['message'] = 'SendComp';
 
-            $logger->logAction($errorMessage, $_SESSION['unique_id'], 'ERROR');
-            exit();
-        }
+        $handler = $this->m2mBaseFunctions;
+        $error = $handler->baseFunctions($app);
 
-        $rank = true;
-        $error = false;
-
-        if(isset($_SESSION['error'])) {
-            $error = $_SESSION['error'];
-            $logger = $this->loggerWrapper;
-            $errorMessage = $_SESSION['error'];
-            $logger->logAction($errorMessage, $_SESSION['unique_id'], 'ERROR');
-            unset($_SESSION['error']);
-        }
-
-        $_SESSION['message'] = 'SendMessage';
-        $logger = $this->loggerWrapper;
-        $logger->logAction($_SESSION['message'], $_SESSION['unique_id'], 'INFO');
         return $this->view->render($response,
             'sendmessage.html.twig',
             [
@@ -47,7 +27,7 @@ $app->get(
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
                 'landing_page6' =>'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
-                'rank' => $rank,
+                'rank' => $_SESSION['rank'],
 
 
             ]);

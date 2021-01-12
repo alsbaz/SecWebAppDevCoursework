@@ -6,22 +6,10 @@ use Slim\Http\Response;
 $app->get(
     '/showdownloadedpage',
     function(Request $request, Response $response) use ($app) {
-        if(!isset($_SESSION['unique_id'])) { //For any logged in content
-            header("Location: /");
-            $_SESSION['error'] = 'Please log in before accessing that';
-            exit();
-        }
-
-        $rank = true;
-        $error = false;
-
-        if(isset($_SESSION['error'])) {
-            $error = $_SESSION['error'];
-            unset($_SESSION['error']);
-        }
-
         $_SESSION['message'] = 'ShowDownloaded';
 
+        $handler = $this->m2mBaseFunctions;
+        $error = $handler->baseFunctions($app);
 
         return $this->view->render($response,
             'showdownloadedpage.html.twig',
@@ -40,7 +28,7 @@ $app->get(
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
                 'landing_page6' =>'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
-                'rank' => $rank,
+                'rank' => $_SESSION['rank'],
 
             ]);
     });

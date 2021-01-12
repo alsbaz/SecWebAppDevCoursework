@@ -33,19 +33,23 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 $app->any('/', function(Request $request, Response $response) use ($app)
 {
-    $errorMessage = null;
+    $logger = $this->loggerWrapper;
+
+    $error = null;
     $messageOutput = null;
     $message = null;
-//var_dump($_SESSION);
-//var_dump(session_id());
+
     if (isset($_SESSION['message'])) {
         $message = $_SESSION['message'];
         unset($_SESSION['message']);
     }
     if(isset($_SESSION['unique_id'])) unset($_SESSION['unique_id']);
-//    if(isset($_SESSION)) unset($_SESSION);
 
     $tainted_params = $request->getParsedBody();
+    if ($tainted_params != null) {
+        $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'], 'INPUT', 'Input values');
+    }
+
     try {
         if ($message == 'Register' && $tainted_params != null) {
             $validator = $this->m2mInputValidator;
@@ -56,76 +60,55 @@ $app->any('/', function(Request $request, Response $response) use ($app)
             if ($cleaned_params != false) {
                 $plain_password = $cleaned_params['password'];
                 $cleaned_params['password'] = $hasher->hashPassword($plain_password);
-                $errorMessage = 'Error with password hashing';
-                if ($cleaned_params['password'] == false) throw new Exception($errorMessage, 1);
-                $logger = $this->loggerWrapper;
-                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
-                unset($errorMessage);
+                if ($cleaned_params['password'] == false) {
+                    $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'], 'WARNING', 'Hashing error: ');
+                    throw new Exception("There was an error, please try again", 1);
+                }
             } else {
-                $errorMessage = 'Error while cleaning';
-                throw new Exception($errorMessage, 1);
-                $logger = $this->loggerWrapper;
-                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
-                unset($errorMessage);
+                $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'], 'WARNING', 'Validation failed, Input values');
+                throw new Exception("Incorrect values, please try again", 1);
             }
 
             if (!isset($_SESSION['unique_id'])) {
                 $cleaned_params['unique_id'] = bin2hex(random_bytes(10));
             } else {
                 unset($_SESSION['unique_id']);
-                $errorMessage = 'Unique ID pre set, please try again';
-                throw new Exception($errorMessage, 1);
-                $logger = $this->loggerWrapper;
-                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
-                unset($errorMessage);
+                $logger->logAction(null, $_SERVER['REMOTE_ADDR'], 'ERROR', 'Unique ID set outside');
+                throw new Exception("Unique ID pre set, please try again", 1);
             }
 
             $storage_result = storeRegDetails($app, $cleaned_params);
             if ($storage_result['outcome'] == 1) {
                 $messageOutput = 'Successful registered, please log in to use our services';
             } else {
-                $errorMessage = "Error with saving to database, please try again";
-                throw new Exception($errorMessage, 1);
-                $logger = $this->loggerWrapper;
-                $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
-                unset($errorMessage);
+                throw new Exception("Error with saving to database, please try again", 1);
             }
         }
     } catch (Exception $e) {
         switch ($e->getCode()) {
             case 0:
-                $_SESSION['error'] = "This username or email is already registered" . $e->getMessage();
-
-                $logger = $this->loggerWrapper;
-                $logger->logAction($_SESSION['error'], $_SERVER['REMOTE_ADDR'], 'ERROR');
-
+                $logger->logAction($e->getMessage(), $_SERVER['REMOTE_ADDR'], 'WARNING');
+                $_SESSION['error'] = "This username or email is already registered";
                 header("Location: /register");
                 exit();
-                break;
             case 1:
                 $_SESSION['error'] = $e->getMessage();
-
-                $logger = $this->loggerWrapper;
-                $logger->logAction($_SESSION['error'], $_SERVER['REMOTE_ADDR'], 'ERROR');
-
                 header("Location: /register");
                 exit();
             default:
-            $_SESSION['error'] = $e->getMessage() . 'something';
+                $logger->logAction($e->getMessage(), $_SERVER['REMOTE_ADDR'], 'ERROR');
+                $_SESSION['error'] = $e->getMessage() . 'something';
         }
     }
 
     if(isset($_SESSION['error']))
     {
-        $errorMessage = $_SESSION['error'];
-        $logger = $this->loggerWrapper;
-        $logger->logAction($errorMessage, $_SERVER['REMOTE_ADDR'], 'ERROR');
+        $logger->logAction($_SESSION['error'], $_SESSION['unique_id'], 'ERROR', 'Error message: ');
+        $error = $_SESSION['error'];
         unset($_SESSION['error']);
     }
 
     $_SESSION['message'] = 'Login';
-    $logger = $this->loggerWrapper;
-    $logger->logAction($_SESSION['error'], $_SERVER['REMOTE_ADDR'], 'ERROR');
     return $this->view->render($response,
     'homepageform.html.twig',
     [
@@ -137,7 +120,7 @@ $app->any('/', function(Request $request, Response $response) use ($app)
         'action2' => 'register',
         'page_heading_1' => 'Login page',
         'page_heading_2' => 'Please login or choose to register',
-        'error' => $errorMessage,
+        'error' => $error,
         'message' => $messageOutput,
     ]);
 })->setName('homepage');

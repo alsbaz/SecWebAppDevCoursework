@@ -4,32 +4,38 @@
 {#    <meta http-equiv="refresh" content="1" >#}
     <div id="page-content-div">
         <h3>{{ page_heading_2 }}</h3>
-        {% if(message != false) %}
-{#            <fieldset>#}
-                <p>{{ message }}</p>
-{#            </fieldset>#}
+        {% if(error != false) %}
+            <p class="error">{{ error }}</p>
+        {% elseif(message != false) %}
+            <p class="message">{{ message }}</p>
         {% endif %}
         <fieldset id="landing_table">
-            <legend>{{ feed_message }}</legend>
-            <table id="tableLanding">
-                <thead>
-                <tr>
-                    {% for header in message_array_feed.0|keys %}
-                        <th>{{ header }}</th>
-                    {% endfor %}
-                </tr>
-                </thead>
-                <tbody>
-                {% for nested_array in message_array_feed %}
+            <legend>{{ feed_message }}
+{#                <button id="landing_refresh1">Test me baby</button>#}
+            </legend>
+            <button id="landing_refresh1" onclick="timerFunction()">Start tracking messages</button>
+            <div id="div_messages">
+                <table id="tableLanding">
+                    <thead>
                     <tr>
-                        {% for value in nested_array %}
-                            <td>{{ value }}</td>
+                        {% for header in message_array_feed.0|keys %}
+                            <th>{{ header }}</th>
                         {% endfor %}
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for nested_array in message_array_feed %}
+                        <tr>
+                            {% for value in nested_array %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </fieldset>
+        <br>
         {% if(message_array == true) %}
             <fieldset id="landing_table">
                 <legend>Results:</legend>
@@ -55,11 +61,12 @@
             <br>
         {% endif %}
         <fieldset id="landing_table2">
-            <div id="divSwitchboard">
-                <legend>Switchboard:</legend>
-                <table id="tableSwitchboard">
+            <legend>Switchboard:</legend>
+            <button id="landing_refresh2">Refresh switchboard</button>
+            <div id="div_switchboard">
+                <table id="table_switchboard">
                     {% for key, value in switchboard_result %}
-                        <tr class="switchTable">
+                        <tr class="switch_table">
                             <th>{{ key }}</th>
                             {% if(key == "Temperature: ") %}
                                 <td>{{ value }} &#8451;</td>
@@ -71,7 +78,6 @@
                     {% endfor %}
                 </table>
             </div>
-            <button>Refresh switchboard</button>
         </fieldset>
 
     </div>

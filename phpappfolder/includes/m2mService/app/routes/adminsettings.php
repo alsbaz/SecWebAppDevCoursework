@@ -6,27 +6,17 @@ use Slim\Http\Response;
 $app->get(
     '/adminsettings',
     function (Request $request, Response $response) use ($app) {
-        if(!isset($_SESSION['unique_id'])) {
-            header("Location: /");
-            $_SESSION['error'] = 'Please log in before accessing that';
-            $logger = $this->loggerWrapper;
-            $logger->logAction($_SESSION['error'], $_SESSION['unique_id'], 'ERROR');
+        if($_SESSION['rank'] != 'Admin') {
+            header("Location: landingpage");
+            $_SESSION['error'] = 'You don\'t have permissions to access that.';
             exit();
         }
 
-        $rank = true;
-        $error = false;
-
-        if(isset($_SESSION['error'])) {
-            $error = $_SESSION['error'];
-            $logger = $this->loggerWrapper;
-            $logger->logAction($_SESSION['error'], $_SESSION['unique_id'], 'ERROR');
-            unset($_SESSION['error']);
-        }
-
         $_SESSION['message'] = 'AdminSetting';
-        $logger = $this->loggerWrapper;
-        $logger->logAction($_SESSION['message'], $_SESSION['unique_id'], 'INFO');
+
+        $handler = $this->m2mBaseFunctions;
+        $error = $handler->baseFunctions($app);
+
         return $this->view->render($response,
             'adminsettings.html.twig',
             [
@@ -43,6 +33,6 @@ $app->get(
                 'landing_page5' => $_SERVER["SCRIPT_NAME"],
                 'landing_page6' =>'showdownloadedpage',
                 'landing_page7' => 'adminsettings',
-                'rank' => $rank,
+                'rank' => $_SESSION['rank'],
         ]);
     });

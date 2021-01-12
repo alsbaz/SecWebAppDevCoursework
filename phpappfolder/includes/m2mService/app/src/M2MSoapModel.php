@@ -10,8 +10,6 @@ use PHPUnit\Util\Exception;
 
 class M2MSoapModel
 {
-    // set all these private values for handling later on
-    // can't be accessed outside of this class
     private $method_to_use;
     private $params;
     private $username;
@@ -37,32 +35,25 @@ class M2MSoapModel
 
     /**
      * Method performing the soap call, handling all sub-methods.
+     * The soap call is surrounded by try catch block with valid
+     * error handling in case something goes wrong.
      */
     public function performSoapCall()
     {
         $result = null;
         $soap_client_handle = null;
-        // creating the client handle
         $soap_client_handle = $this->createSoapClient();
 
-        // select call method and set variables
         $soap_function = $this->selectSoapCall();
 
-        // use try catch block to stop fatal error
         try {
-            // only does the soap call if user is logged in
             if (isset($_SESSION['username'])) {
-                // and the handle is set
                 if ($soap_client_handle !== false) {
-                    // use the __soapCall method from the handle instance with the right variables
                     $call_result = $soap_client_handle->__soapCall($soap_function, $this->params);
                 }
-                // sets the result as a value of the class instance
                 $this->result = $call_result;
             }
-        // if Soap exception is thrown, catch it
         } catch(\SoapFault $e) {
-            // depending on the exception, set the error message to the specified message
             switch ($e->getMessage()) {
                 case 'java.lang.NullPointerException':
                     $_SESSION['error'] = 'Please enter a MSISDN number. ' . $e->getMessage();
@@ -74,6 +65,8 @@ class M2MSoapModel
                     $_SESSION['error'] = 'Something went wrong, please try again. ' . $e->getMessage();
                     break;
             }
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+            exit();
         }
     }
 
@@ -81,12 +74,13 @@ class M2MSoapModel
      * @return string
      * @throws \Exception
      * Sets the method and variables depending on the method passed earlier.
+     * Private values are set by the magic function before calling this class.
+     * I use values save in the Session global variable to identify the user.
      */
     private function selectSoapCall()
     {
         $soap_call_params = [];
 
-        // switch the method_to_use and sets the values depending on the method
         switch($this->method_to_use) {
             case 'sendMessage':
                 $soap_function = 'sendMessage';
@@ -94,7 +88,6 @@ class M2MSoapModel
                     'username' => $this->username,
                     'password' => $this->password,
                     'deviceMSISDN' => $this->device_MSISDN,
-                    // message contains some crafted XML tags along the message
                     'message' => '<id>20-3110-AD</id><username>' . $_SESSION['username'] . '</username><message_content>' . $this->message . '</message_content>',
                     'deliveryReport' => false,
                 ];
@@ -146,15 +139,14 @@ class M2MSoapModel
     /**
      * @return false|\SoapClient
      * This method handles the creation of the soap client.
+     * Creation of the client is captured by a try catch block with error handling.
      */
     private function createSoapClient()
     {
-        // sets the soap options, including the address for wsdl
         $soap_client_handle = false;
         $soapclient_attributes = ['trace' => true, 'exceptions' => true];
         $wsdl = WSDL;
 
-        // try catch block to handle connecting to soap client
         try {
             $soap_client_handle = new \SoapClient($wsdl, $soapclient_attributes);
         } catch (\SoapFault $e) {
