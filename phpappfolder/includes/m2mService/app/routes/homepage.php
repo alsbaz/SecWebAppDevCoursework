@@ -103,7 +103,7 @@ $app->any('/', function(Request $request, Response $response) use ($app)
 
     if(isset($_SESSION['error']))
     {
-        $logger->logAction($_SESSION['error'], $_SESSION['unique_id'], 'ERROR', 'Error message: ');
+        $logger->logAction($_SESSION['error'], $_SERVER['REMOTE_ADDR'], 'ERROR', 'Error message: ');
         $error = $_SESSION['error'];
         unset($_SESSION['error']);
     }
@@ -143,6 +143,8 @@ function storeRegDetails($app, $cleaned_params)
     $db_connection_settings = $app->getContainer()->get('doctrine_db_settings');
     $doctrine_queries = $app->getContainer()->get('m2mDoctrineSqlQueries');
     $db_connection = DriverManager::getConnection($db_connection_settings);
+    $log = $app->getContainer()->get('m2mBaseFunctions');
+    $log->sqlLogging($app, 'connection');
 
     $queryBuilder = $db_connection->createQueryBuilder();
     $storage_result = $doctrine_queries::queryStoreUserData($queryBuilder, $cleaned_params);

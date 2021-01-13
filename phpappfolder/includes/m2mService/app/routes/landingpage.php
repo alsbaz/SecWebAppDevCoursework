@@ -164,7 +164,10 @@ $app->any(
                 default:
                     break;
             }
-//            else {
+            else {
+                $handler = $this->m2mBaseFunctions;
+                $error = $handler->baseFunctions($app);
+            }
 //                $method = 'sendMessageAuto';
 //                $result = doSoapFunction($app, $tainted_params, $method);
 //
@@ -186,8 +189,6 @@ $app->any(
 //                }
 //            }
 
-            $handler = $this->m2mBaseFunctions;
-            $error = $handler->baseFunctions($app);
 
             $switchboard_result_unhandled = getSwithboardState($app);
 
@@ -277,8 +278,7 @@ function doSoapFunction($app, $params, $method)
     if(isset($params['message'])) $soapModel->message = $params['message'];
     if(isset($params['mtBearer'])) $soapModel->mt_bearer = $params['mtBearer'];
     $test = $soapModel->performSoapCall();
-//var_dump($soapModel);
-//var_dump($test);
+
     return $soapModel->result;
 }
 
@@ -327,9 +327,9 @@ function queryRetrieveM2mMessagesLimit($app, $limit)
 {
     $db_handlers = dbSetupConnection($app);
     $storage_result = $db_handlers['doctrine_queries']::queryRetrieveM2mMessagesLimit($db_handlers['query_builder'], $limit);
+    $db_handlers['log']->sqlLogging($app, 'selectResult');
 
     return $storage_result;
-
 }
 
 function dbSetupConnection($app)
@@ -338,6 +338,9 @@ function dbSetupConnection($app)
     $db_handlers['doctrine_queries'] = $app->getContainer()->get('m2mDoctrineSqlQueries');
     $db_handlers['connection'] = DriverManager::getConnection($db_handlers['settings']);
     $db_handlers['query_builder'] = $db_handlers['connection']->createQueryBuilder();
+    $log = $app->getContainer()->get('m2mBaseFunctions');
+    $log->sqlLogging($app, 'connection');
+    $db_handlers['log'] = $log;
 
     return $db_handlers;
 }

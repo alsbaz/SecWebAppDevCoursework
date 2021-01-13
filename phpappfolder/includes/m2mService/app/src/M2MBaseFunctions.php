@@ -26,4 +26,18 @@ class M2MBaseFunctions
 
         return $error;
     }
+
+    public function sqlLogging($app, $type)
+    {
+        $logger = $app->getContainer()->get('loggerWrapper');
+        switch($type) {
+            case 'connection':
+                if(isset($_SESSION['unique_id'])) {
+                    $logger->logAction('Connection to DB', $_SESSION['unique_id'], 'INFO');
+                } else {
+                    $logger->logAction('Connection to DB', $_SERVER['REMOTE_ADDR'], 'INFO');
+                }
+                break;
+        }
+    }
 }

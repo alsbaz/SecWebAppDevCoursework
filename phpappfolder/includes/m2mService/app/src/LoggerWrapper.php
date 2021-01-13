@@ -20,6 +20,11 @@ class LoggerWrapper
 
     public function logAction($message, $identifier, $log_type, $optional1 = null)
     {
+        if (isset($message['password'])) {
+            unset($message['password']);
+        } elseif (isset($message['password2'])) {
+            unset($message['password2']);
+        }
         $current_page = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $log = new Logger($current_page);
 
@@ -59,42 +64,4 @@ class LoggerWrapper
 
         }
     }
-//
-////    public function logAction($message, $identifier, $log_type)
-////    {
-////        $logs_file_path = '../logs/m2mService_info.log';
-////        $current_page = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-////
-////        $log = new Logger($current_page);
-////        $log->pushHandler(new StreamHandler($logs_file_path, Logger::INFO));
-////
-////        $log->$log_type('Identifier: ' . $identifier . ' ' . $log_type. ': ' . $message);
-////    }
-//
-//    public function logError($message, $identifier, $log_type, $error_type)
-//    {
-//        $logs_file_path = '../logs/m2mService_error.log';
-//        $current_page = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-//
-//        $log = new Logger($current_page);
-//        $log->pushHandler(new StreamHandler($logs_file_path, Logger::ERROR));
-//
-//        $log->$log_type('Identifier: ' . $identifier . ' ' . $error_type . ': ' . $message);
-//    }
-//
-//    public function logValues($values_array, $identifier, $log_type, $error_type)
-//    {
-//        $logs_file_path = '../logs/m2mService_error.log';
-//        $current_page = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-//
-//        $log = new Logger($current_page);
-//        $log->pushHandler(new StreamHandler($logs_file_path, Logger::ERROR));
-//
-//        $values = '';
-//        foreach ($values_array as $key => $item) {
-//            $values = $values . ' ' . $key . ' ' . $item . ',';
-//        }
-//
-//        $log->$log_type('Identifier: ' . $identifier . ' ' . $error_type . ':' . $values);
-//    }
 }

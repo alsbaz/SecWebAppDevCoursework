@@ -5,8 +5,10 @@
  */
 
 namespace M2mService;
-
-use PHPUnit\Util\Exception;
+//
+//use Monolog\Logger;
+//use PHPUnit\Util\Exception;
+use M2mService\LoggerWrapper;
 
 class M2MSoapModel
 {
@@ -40,9 +42,10 @@ class M2MSoapModel
      */
     public function performSoapCall()
     {
+        $logger = new LoggerWrapper();
         $result = null;
         $soap_client_handle = null;
-        $soap_client_handle = $this->createSoapClient();
+        $soap_client_handle = $this->createSoapClient($logger);
 
         $soap_function = $this->selectSoapCall();
 
@@ -50,21 +53,23 @@ class M2MSoapModel
             if (isset($_SESSION['username'])) {
                 if ($soap_client_handle !== false) {
                     $call_result = $soap_client_handle->__soapCall($soap_function, $this->params);
+                    $logger->logAction('Successful SOAP call', $_SESSION['unique_id'], INFO);
                 }
                 $this->result = $call_result;
             }
         } catch(\SoapFault $e) {
             switch ($e->getMessage()) {
                 case 'java.lang.NullPointerException':
-                    $_SESSION['error'] = 'Please enter a MSISDN number. ' . $e->getMessage();
+                    $_SESSION['error'] = 'Please enter a MSISDN number. ';
                     break;
                 case 'com.orange.telematics.otel.soap.MessageServiceException: login failed':
-                    $_SESSION['error'] = 'Please try again with valid login credentials. ' . $e->getMessage();
+                    $_SESSION['error'] = 'Please try again with valid login credentials. ';
                     break;
                 default:
-                    $_SESSION['error'] = 'Something went wrong, please try again. ' . $e->getMessage();
+                    $_SESSION['error'] = 'Something went wrong, please try again. ';
                     break;
             }
+            $logger->logAction($e->getMessage(), $_SESSION['unique_id'], ERROR, 'Error with SOAP: ');
             header("Location: " . $_SERVER['HTTP_REFERER']);
             exit();
         }
@@ -141,7 +146,7 @@ class M2MSoapModel
      * This method handles the creation of the soap client.
      * Creation of the client is captured by a try catch block with error handling.
      */
-    private function createSoapClient()
+    private function createSoapClient($logger)
     {
         $soap_client_handle = false;
         $soapclient_attributes = ['trace' => true, 'exceptions' => true];
@@ -149,9 +154,13 @@ class M2MSoapModel
 
         try {
             $soap_client_handle = new \SoapClient($wsdl, $soapclient_attributes);
+
         } catch (\SoapFault $e) {
             $_SESSION['error'] = 'Can\'t connect to the Soap client'  . $e->getMessage();
+
+            return false;
         }
+        $logger->logAction('Connection made to SOAP', $_SESSION['unique_id'], INFO);
         return $soap_client_handle;
     }
 }
