@@ -4,7 +4,6 @@ namespace M2mService;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-
 class LoggerWrapper
 
 {
@@ -18,6 +17,14 @@ class LoggerWrapper
 
     }
 
+    /**
+     * @param $message the message explaining whats being logged
+     * @param $identifier used to identify the user
+     * @param $log_type the type of log, Info, warning or error
+     * @param null $optional1 
+     * The function to log whatever is happening on the site.
+     * Writes the log to one of multiple log files depending on the log type.
+     */
     public function logAction($message, $identifier, $log_type, $optional1 = null)
     {
         if (isset($message['password'])) {

@@ -9,7 +9,7 @@
 
 namespace M2mService;
 
-
+use M2mService\LoggerWrapper;
 class M2MDoctrineSqlQueries
 {
     public function __construct(){}
@@ -25,6 +25,7 @@ class M2MDoctrineSqlQueries
      */
     public static function queryStoreUserData($queryBuilder, array $cleaned_params)
     {
+        $logger = new LoggerWrapper();
         $store_result = [];
 
         $queryBuilder = $queryBuilder->insert('m2m_users')
@@ -44,6 +45,8 @@ class M2MDoctrineSqlQueries
         $store_result['outcome'] = $queryBuilder->execute();
         $store_result['sql_query'] = $queryBuilder->getSQL();
 
+        $logger->logAction('Stored user data in database', $_SERVER['SERVER_ADDR'], 'INFO');
+
         return $store_result;
     }
 
@@ -57,12 +60,14 @@ class M2MDoctrineSqlQueries
      */
     public static function  queryRetrieveUserData($queryBuilder, $cleaned_param)
     {
+        $logger = new LoggerWrapper();
         $queryBuilder
             ->select('m2m_pass_hash', 'm2m_id', 'm2m_email', 'm2m_admin')
             ->from('m2m_users')
             ->where('m2m_username = ' . $queryBuilder->createNamedParameter($cleaned_param));
 
         $query = $queryBuilder->execute();
+        $logger->logAction('Retrieved user data database', $_SERVER['SERVER_ADDR'], 'INFO');
 
         return $query->fetchAll();
     }
@@ -78,6 +83,7 @@ class M2MDoctrineSqlQueries
      */
     public static function queryStoreM2mMessages($queryBuilder, $params, $queryBuilder2)
     {
+        $logger = new LoggerWrapper();
         $result_stored = [];
         $counter = 0;
 
@@ -117,6 +123,8 @@ class M2MDoctrineSqlQueries
                 $store_result['sql_query'] = $queryBuilder2->getSQL();
             }
         }
+        $logger->logAction('Stored m2m messages in database', $_SERVER['SERVER_ADDR'], 'INFO');
+
         return $result_stored;
     }
 
@@ -130,6 +138,7 @@ class M2MDoctrineSqlQueries
      */
     public static function  queryRetrieveM2mMessages($queryBuilder, array $cleaned_param)
     {
+        $logger = new LoggerWrapper();
         $queryBuilder
             ->select('*')
             ->from('m2m_messages');
@@ -152,6 +161,7 @@ class M2MDoctrineSqlQueries
             }
         }
         $query = $queryBuilder->execute();
+        $logger->logAction('messages retrieved from database', $_SERVER['SERVER_ADDR'], 'INFO');
 
         return $query->fetchAll();
     }
@@ -166,6 +176,7 @@ class M2MDoctrineSqlQueries
      */
     public static function queryUpdateM2mSwitch($queryBuilder, $array)
     {
+        $logger = new LoggerWrapper();
         $queryBuilder = $queryBuilder->update('m2m_switch');
         foreach ($array as $key =>$value) {
             $queryBuilder->set($key, $queryBuilder->createNamedParameter($value));
@@ -174,6 +185,9 @@ class M2MDoctrineSqlQueries
 
         $store_result['outcome'] = $queryBuilder->execute();
         $store_result['sql_query'] = $queryBuilder->getSQL();
+
+        $logger->logAction('m2m switch updated in database', $_SERVER['SERVER_ADDR'], 'INFO');
+
         return $store_result;
     }
 
@@ -185,12 +199,14 @@ class M2MDoctrineSqlQueries
      */
     public static function getSwitchboardState($queryBuilder)
     {
+        $logger = new LoggerWrapper();
         $queryBuilder
             ->select('switch_timestamp', 'switch1', 'switch2', 'switch3', 'switch4', 'fan', 'heaterTemp', 'lastDigit')
             ->from('m2m_switch')
             ->where('switchboard_name = ' . $queryBuilder->createNamedParameter('main'));
 
         $query = $queryBuilder->execute();
+        $logger->logAction('Switchboard state retrieved from database', $_SERVER['SERVER_ADDR'], 'INFO');
 
         return $query->fetchAll();
     }
@@ -204,6 +220,7 @@ class M2MDoctrineSqlQueries
      */
     public static function queryRetrieveM2mMessagesLimit($queryBuilder, $limit)
     {
+        $logger = new LoggerWrapper();
         $queryBuilder
             ->select('*')
             ->from('m2m_messages')
@@ -211,6 +228,7 @@ class M2MDoctrineSqlQueries
             ->setMaxResults($limit);
 
         $query = $queryBuilder->execute();
+        $logger->logAction('Retrieved m2m message limit from the database', $_SERVER['SERVER_ADDR'], 'INFO');
 
         return $query->fetchAll();
     }

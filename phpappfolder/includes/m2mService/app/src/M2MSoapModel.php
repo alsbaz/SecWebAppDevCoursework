@@ -5,11 +5,8 @@
  */
 
 namespace M2mService;
-//
-//use Monolog\Logger;
-//use PHPUnit\Util\Exception;
-use M2mService\LoggerWrapper;
 
+use M2mService\LoggerWrapper;
 class M2MSoapModel
 {
     private $method_to_use;
@@ -53,7 +50,7 @@ class M2MSoapModel
             if (isset($_SESSION['username'])) {
                 if ($soap_client_handle !== false) {
                     $call_result = $soap_client_handle->__soapCall($soap_function, $this->params);
-                    $logger->logAction('Successful SOAP call', $_SESSION['unique_id'], INFO);
+                    $logger->logAction('Successful SOAP call', $_SESSION['unique_id'], 'INFO');
                 }
                 $this->result = $call_result;
             }
@@ -160,7 +157,7 @@ class M2MSoapModel
 
             return false;
         }
-        $logger->logAction('Connection made to SOAP', $_SESSION['unique_id'], INFO);
+        $logger->logAction('Connection made to SOAP', $_SESSION['unique_id'], 'INFO');
         return $soap_client_handle;
     }
 }
