@@ -9,17 +9,7 @@ $app->any(
     function(Request $request, Response $response) use ($app)
     {
         $logger = $this->loggerWrapper;
-//$time_start = microtime(true);
-//$time_end = microtime(true);
-//$time = ($time_end - $time_start) * 10;
-//var_dump($time);
-//        if(!isset($_SESSION['message'])) $_SESSION['message'] = 'SendCompAuto'; //If want to generate messages automatically
-//        if(!isset($_SESSION['unique_id']) && $_SESSION['message'] != 'Login') {
-//            header("Location: /");
-//            $_SESSION['error'] = 'Please log in before accessing that';
-//            exit();
-//        }
-//var_dump($_SESSION);
+
         $tainted_params = $request->getParsedBody();
         if (isset($_SESSION['unique_id']) && $tainted_params != null) {
             $logger->logAction($tainted_params, $_SERVER['REMOTE_ADDR'] . $_SESSION['unique_id'], 'INPUT', 'Input values');
@@ -32,6 +22,8 @@ $app->any(
         $rank = null;
         try {
             if(isset($_SESSION['message'])) switch($_SESSION['message']) {
+
+                // Login
                 case 'Login':
                     $validator = $this->m2mInputValidator;
                     if($tainted_params == null) {
@@ -66,6 +58,8 @@ $app->any(
 
                     $message = 'Welcome to the M2M service interface ' . $cleaned_params['username'] . '!';
                     break;
+
+                // Send Message
                 case 'SendComp':
                     if($tainted_params == null) break;
                     $method = 'sendMessage';
@@ -87,21 +81,43 @@ $app->any(
                     $result = doSoapFunction($app, $tainted_params, $method);
                     if($result == true) $message = 'Message sent successfully.';
                     break;
+
+                // View Messages
                 case 'ReadComp':
                     if($tainted_params == null) break;
                     $method = 'peekMessages';
 
+                    if ($tainted_params['msisdn'] == '') {
+                        throw new Exception("MSISDN field cannot be empty", 3);
+                    } elseif (is_numeric($tainted_params['msisdn']) == false) {
+                        throw new Exception("Please enter a MSISDN", 3);
+                    // no upper limit exception catch needed as input box is limited to 6 (max is 999999 - same as m2m)
+                    } elseif (($tainted_params['count']) < 1) {
+                        throw new Exception("Please enter a valid number of messages", 3);
+                    }
+
                     $sanitiser = $this->m2mInputValidator;
                     $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
+
                     $result_messages = doSoapFunction($app, $cleaned_params, $method);
                     $handler = $this->m2mMessageHandler;
 
                     $result_array = $handler->splitMessageRegex($result_messages);
                     if($result_array == null) $message = 'No messages have been received.';
                     break;
+
+                // Download Messages
                 case 'DownloadComp':
                     if($tainted_params == null) break;
                     $method = 'peekMessages';
+
+                    if ($tainted_params['msisdn'] == '') {
+                        throw new Exception("MSISDN field cannot be empty", 3);
+                    } elseif (is_numeric($tainted_params['msisdn']) == false) {
+                        throw new Exception("Please enter a MSISDN", 3);
+                    } elseif (($tainted_params['count']) < 1) {
+                        throw new Exception("Please enter a valid number of messages", 3);
+                    }
 
                     $sanitiser = $this->m2mInputValidator;
                     $cleaned_params = $sanitiser->sanitiseInput($tainted_params);
@@ -123,6 +139,8 @@ $app->any(
                         }
                     } else $message = 'No new messages.';
                     break;
+
+                // Read Downloaded
                 case 'ShowDownloaded':
                     if($tainted_params == null) break;
                     foreach ($tainted_params as $param => $value) {
@@ -145,6 +163,8 @@ $app->any(
                     $result_array = getM2mMessages($app, $cleaned_params);
                     if($result_array == null) $message = 'No matches were found.';
                     break;
+
+                // Admin Settings (Switchboard)
                 case 'AdminSetting':
                     if($tainted_params == null) break;
                     if($tainted_params['heaterTemp'] == '' || $tainted_params['lastDigit'] == ''){
@@ -168,27 +188,6 @@ $app->any(
                 $handler = $this->m2mBaseFunctions;
                 $error = $handler->baseFunctions($app);
             }
-//                $method = 'sendMessageAuto';
-//                $result = doSoapFunction($app, $tainted_params, $method);
-//
-//
-//                $method = 'peekMessages';
-//
-//                $params = [
-//                    'username' => '20_17209674',
-//                    'password' => 'CGs74bktVKzAHxC',
-//                ];
-//                $result_messages = doSoapFunction($app, $params, $method);
-//                if ($result_messages != null) {
-//                    $handler = $this->m2mMessageHandler;
-//                    $split_array = $handler->splitMessageRegex($result_messages);
-//
-//                    if ($split_array != null) {
-//                        storageM2mMessages($app, $split_array);
-//                    }
-//                }
-//            }
-
 
             $switchboard_result_unhandled = getSwithboardState($app);
 
